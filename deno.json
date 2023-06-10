@@ -1,0 +1,31 @@
+{
+  "fmt": {
+    "proseWrap": "preserve"
+  },
+  "imports": {
+    "std/": "https://deno.land/std@0.191.0/",
+    "cliffy/": "https://deno.land/x/cliffy@v0.25.7/",
+    "textlint": "npm:textlint@13.3.2"
+  },
+  "tasks": {
+    "prettier": "deno run -A npm:prettier@2.8.8",
+    "textlint": "deno run -A ./bin/textlint.ts",
+    "swagger-cli": "deno run -A npm:@apidevtools/swagger-cli@4.0.4",
+    "prism-cli": "deno run -A npm:@stoplight/prism-cli@5.0.1",
+    "lint": "deno task lint:textlint && deno task lint:deno && deno task lint:prettier",
+    "lint:textlint": "deno task textlint .",
+    "lint:deno": "deno lint",
+    "lint:prettier": "deno task prettier --loglevel warn --check --ignore-path .gitignore ./**/*.yaml",
+    "fix": "deno task fix:textlint && deno task fix:deno && deno task fix:prettier",
+    "fix:textlint": "deno task textlint . --fix",
+    "fix:deno": "deno fmt",
+    "fix:prettier": "deno task prettier --loglevel warn --write --ignore-path .gitignore ./**/*.yaml",
+    "start": "deno run --allow-net --allow-read ./bin/server.ts --port 4000 --base-path './'",
+    "serve": "deno run --allow-net --allow-read ./bin/server.ts --port 4000 --base-path './dist'",
+    "build": "deno task clean && deno task merge && cp ./index.html ./dist/.",
+    "clean": "rm -rf ./dist",
+    "merge": "deno task swagger-cli bundle ./src/api.yaml -t yaml -o ./dist/src/api.yaml",
+    "sort": "deno run --allow-read --allow-write ./bin/sort.ts",
+    "mockup": "deno task prism-cli mock ./src/api.yaml"
+  }
+}

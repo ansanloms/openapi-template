@@ -1,0 +1,74 @@
+get:
+  operationId: getUsersId
+  summary: ユーザの取得
+  tags:
+    - users
+  description:
+    $ref: ./descriptions/getUsersId.md
+  parameters:
+    - in: path
+      name: id
+      required: true
+      description: ユーザ ID
+      schema:
+        type: integer
+        format: int64
+  responses:
+    200:
+      description: 処理成功時
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/responses/GetUsers.yaml
+          examples:
+            succeeded:
+              value:
+                $ref: ../examples/responses/GetUsers.yaml
+    500:
+      description: 処理失敗時
+      content:
+        application/problem+json:
+          schema:
+            $ref: ../schemas/responses/Error.yaml
+          examples:
+            processingFailed:
+              value:
+                $ref: ../examples/responses/Error.yaml
+put:
+  operationId: putUsersId
+  summary: ユーザ更新
+  tags:
+    - users
+  description:
+    $ref: ./descriptions/putUsersId.md
+  requestBody:
+    description: 会員情報
+    content:
+      application/json:
+        schema:
+          $ref: ../schemas/requests/PutUsersId.yaml
+        examples:
+          normal:
+            value:
+              $ref: ../examples/requests/PutUsersId.yaml
+  responses:
+    200:
+      description: 処理成功時
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/responses/Empty.yaml
+          examples:
+            succeeded:
+              value:
+                $ref: ../schemas/responses/Empty.yaml
+    500:
+      description: 処理失敗時
+      content:
+        application/problem+json:
+          schema:
+            $ref: ../schemas/responses/Error.yaml
+          examples:
+            processingFailed:
+              value:
+                $ref: ../examples/responses/Error.yaml

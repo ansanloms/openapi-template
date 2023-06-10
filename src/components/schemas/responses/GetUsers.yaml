@@ -1,0 +1,20 @@
+type: object
+required:
+  - offset
+  - limit
+  - count
+  - data
+properties:
+  offset:
+    type: integer
+    description: 取得開始位置
+  limit:
+    type: integer
+    description: 取得件数
+  count:
+    type: integer
+    description: 総件数
+  data:
+    type: array
+    items:
+      $ref: "../models/User.yaml"

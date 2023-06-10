@@ -1,0 +1,5 @@
+status: 400
+code: ERROR-001
+title: エラー
+detail: エラーが発生しました。
+instance: /users
