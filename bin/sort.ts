@@ -1,4 +1,4 @@
-import * as yaml from "std/encoding/yaml.ts";
+import * as yaml from "std/yaml/mod.ts";
 import * as path from "std/path/mod.ts";
 import { dirname, fromFileUrl } from "std/path/mod.ts";
 
