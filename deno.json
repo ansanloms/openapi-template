@@ -3,23 +3,23 @@
     "proseWrap": "preserve"
   },
   "imports": {
-    "std/": "https://deno.land/std@0.191.0/",
-    "cliffy/": "https://deno.land/x/cliffy@v0.25.7/",
-    "textlint": "npm:textlint@13.3.2"
+    "std/": "https://deno.land/std@0.193.0/",
+    "cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.2/",
+    "textlint": "npm:textlint@13.3.3"
   },
   "tasks": {
-    "prettier": "deno run -A npm:prettier@2.8.8",
+    "prettier": "deno run -A npm:prettier@3.0.0",
     "textlint": "deno run -A ./bin/textlint.ts",
     "swagger-cli": "deno run -A npm:@apidevtools/swagger-cli@4.0.4",
     "prism-cli": "deno run -A npm:@stoplight/prism-cli@5.0.1",
     "lint": "deno task lint:textlint && deno task lint:deno && deno task lint:prettier",
     "lint:textlint": "deno task textlint .",
     "lint:deno": "deno lint",
-    "lint:prettier": "deno task prettier --loglevel warn --check --ignore-path .gitignore ./**/*.yaml",
+    "lint:prettier": "deno task prettier --log-level warn --check --ignore-path .gitignore ./**/*.yaml",
     "fix": "deno task fix:textlint && deno task fix:deno && deno task fix:prettier",
     "fix:textlint": "deno task textlint . --fix",
     "fix:deno": "deno fmt",
-    "fix:prettier": "deno task prettier --loglevel warn --write --ignore-path .gitignore ./**/*.yaml",
+    "fix:prettier": "deno task prettier --log-level warn --write --ignore-path .gitignore ./**/*.yaml",
     "start": "deno run --allow-net --allow-read ./bin/server.ts --port 4000 --base-path './'",
     "serve": "deno run --allow-net --allow-read ./bin/server.ts --port 4000 --base-path './dist'",
     "build": "deno task clean && deno task merge && cp ./index.html ./dist/.",
