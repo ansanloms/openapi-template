@@ -3,20 +3,24 @@
     "proseWrap": "preserve"
   },
   "imports": {
-    "std/": "https://deno.land/std@0.193.0/",
-    "cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.2/",
-    "textlint": "npm:textlint@13.3.3"
+    "std/": "https://deno.land/std@0.211.0/",
+    "cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/",
+    "textlint": "npm:textlint@13.4.1",
+    "textlint-filter-rule-comments": "npm:textlint-filter-rule-comments@1.2.2",
+    "textlint-rule-preset-ja-spacing": "npm:textlint-rule-preset-ja-spacing@2.3.0",
+    "textlint-rule-preset-ja-technical-writing": "npm:textlint-rule-preset-ja-technical-writing@10.0.1",
+    "textlint-rule-spellcheck-tech-word": "npm:textlint-rule-spellcheck-tech-word@5.0.0"
   },
   "tasks": {
-    "prettier": "deno run -A npm:prettier@3.0.0",
+    "prettier": "deno run -A npm:prettier@3.1.1",
     "textlint": "deno run -A ./bin/textlint.ts",
     "swagger-cli": "deno run -A npm:@apidevtools/swagger-cli@4.0.4",
-    "prism-cli": "deno run -A npm:@stoplight/prism-cli@5.0.1",
+    "prism-cli": "deno run -A npm:@stoplight/prism-cli@5.5.2",
     "lint": "deno task lint:textlint && deno task lint:deno && deno task lint:prettier",
     "lint:textlint": "deno task textlint .",
     "lint:deno": "deno lint",
     "lint:prettier": "deno task prettier --log-level warn --check --ignore-path .gitignore ./**/*.yaml",
-    "fix": "deno task fix:textlint && deno task fix:deno && deno task fix:prettier",
+    "fix": "deno task sort && deno task fix:textlint && deno task fix:deno && deno task fix:prettier",
     "fix:textlint": "deno task textlint . --fix",
     "fix:deno": "deno fmt",
     "fix:prettier": "deno task prettier --log-level warn --write --ignore-path .gitignore ./**/*.yaml",

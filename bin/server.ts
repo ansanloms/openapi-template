@@ -1,6 +1,5 @@
-import { serve } from "std/http/server.ts";
 import { Command } from "cliffy/command/mod.ts";
-import { Status, STATUS_TEXT } from "std/http/http_status.ts";
+import { STATUS_CODE, STATUS_TEXT } from "std/http/mod.ts";
 import { contentType } from "std/media_types/mod.ts";
 import { dirname, extname, fromFileUrl, join } from "std/path/mod.ts";
 
@@ -12,7 +11,8 @@ const { options } = await new Command()
   .option("--base-path [basePath:string]", "Base path.")
   .parse();
 
-serve(
+Deno.serve(
+  { port: Number(options.port), hostname: "0.0.0.0" },
   async (request: Request) => {
     try {
       const filename = decodeURIComponent(
@@ -34,18 +34,18 @@ serve(
       });
     } catch (error) {
       console.error(error);
+
       if (error instanceof Deno.errors.NotFound) {
-        return new Response(STATUS_TEXT[Status.NotFound], {
-          status: Status.NotFound,
-          statusText: STATUS_TEXT[Status.NotFound],
+        return new Response(STATUS_TEXT[STATUS_CODE.NotFound], {
+          status: STATUS_CODE.NotFound,
+          statusText: STATUS_TEXT[STATUS_CODE.NotFound],
         });
       } else {
-        return new Response(STATUS_TEXT[Status.InternalServerError], {
-          status: Status.InternalServerError,
-          statusText: STATUS_TEXT[Status.InternalServerError],
+        return new Response(STATUS_TEXT[STATUS_CODE.InternalServerError], {
+          status: STATUS_CODE.InternalServerError,
+          statusText: STATUS_TEXT[STATUS_CODE.InternalServerError],
         });
       }
     }
   },
-  { port: Number(options.port) },
 );
