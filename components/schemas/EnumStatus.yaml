@@ -1,6 +1,6 @@
 type: string
 description:
-  $ref: "./descriptions/Status.md"
+  $ref: "./descriptions/EnumStatus.md"
 enum:
   - "admin"
   - "member"

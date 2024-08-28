@@ -1,22 +1,21 @@
-import * as yaml from "std/yaml/mod.ts";
-import * as path from "std/path/mod.ts";
-import { dirname, fromFileUrl } from "std/path/mod.ts";
+import * as yaml from "@std/yaml";
+import * as path from "@std/path";
 
-const __dirname = dirname(fromFileUrl(import.meta.url));
+const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
 
-const API_YAML_PATH = path.join(__dirname, "/../src/api.yaml");
+const API_DOC_PATH = path.join(__dirname, "./../api.yaml");
 
 const main = async () => {
-  const apiYaml = yaml.parse(await Deno.readTextFile(API_YAML_PATH));
+  const apiDoc = yaml.parse(await Deno.readTextFile(API_DOC_PATH));
 
-  apiYaml.paths = Object.keys(apiYaml.paths)
+  apiDoc.paths = Object.keys(apiDoc.paths)
     .sort()
     .reduce((obj, key) => {
-      obj[key] = apiYaml.paths[key];
+      obj[key] = apiDoc.paths[key];
       return obj;
     }, {});
 
-  apiYaml.components.schemas = Object.keys(apiYaml.components.schemas)
+  apiDoc.components.schemas = Object.keys(apiDoc.components.schemas)
     .map((v) => {
       if (v.startsWith("Enum")) {
         return `1${v}`;
@@ -31,24 +30,24 @@ const main = async () => {
     .sort()
     .map((v) => v.slice(1))
     .reduce((obj, key) => {
-      obj[key] = apiYaml.components.schemas[key];
+      obj[key] = apiDoc.components.schemas[key];
       return obj;
     }, {});
 
-  if (apiYaml.components.securitySchemes) {
-    apiYaml.components.securitySchemes = Object.keys(
-      apiYaml.components.securitySchemes,
+  if (apiDoc.components.securitySchemes) {
+    apiDoc.components.securitySchemes = Object.keys(
+      apiDoc.components.securitySchemes,
     )
       .sort()
       .reduce((obj, key) => {
-        obj[key] = apiYaml.components.securitySchemes[key];
+        obj[key] = apiDoc.components.securitySchemes[key];
         return obj;
       }, {});
   }
 
   await Deno.writeTextFile(
-    API_YAML_PATH,
-    yaml.stringify(apiYaml, { lineWidth: -1, quotingType: '"' }),
+    API_DOC_PATH,
+    yaml.stringify(apiDoc, { lineWidth: -1, quotingType: '"' }),
   );
 };
 

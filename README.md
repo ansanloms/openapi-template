@@ -1,1 +1,3 @@
 # openapi-template
+
+OpenAPI Sample.

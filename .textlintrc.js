@@ -3,8 +3,11 @@ module.exports = {
     comments: true,
   },
   rules: {
-    // https://github.com/azu/textlint-rule-spellcheck-tech-word
-    "spellcheck-tech-word": true,
+    // https://github.com/proofdict/proofdict/tree/master/packages/%40proofdict/textlint-rule-proofdict
+    //"@proofdict/proofdict": {
+    //  dictURL: "https://azu.github.io/proof-dictionary/",
+    //  dictGlob: "./dict/*.yaml",
+    //},
 
     // https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing
     "preset-ja-technical-writing": {

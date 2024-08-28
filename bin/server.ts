@@ -1,7 +1,7 @@
 import { Command } from "cliffy/command/mod.ts";
-import { STATUS_CODE, STATUS_TEXT } from "std/http/mod.ts";
-import { contentType } from "std/media_types/mod.ts";
-import { dirname, extname, fromFileUrl, join } from "std/path/mod.ts";
+import { STATUS_CODE, STATUS_TEXT } from "@std/http";
+import { contentType } from "@std/media-types";
+import { dirname, extname, fromFileUrl, join } from "@std/path";
 
 const __dirname = dirname(fromFileUrl(import.meta.url));
 

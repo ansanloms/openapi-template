@@ -25,21 +25,21 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../schemas/responses/GetUsers.yaml
+            $ref: ../components/schemas/ResponseGetUsers.yaml
           examples:
             succeeded:
               value:
-                $ref: ../examples/responses/GetUsers.yaml
+                $ref: ../examples/ResponseGetUsers.yaml
     500:
       description: 処理失敗時
       content:
         application/problem+json:
           schema:
-            $ref: ../schemas/responses/Error.yaml
+            $ref: ../components/schemas/ResponseError.yaml
           examples:
             processingFailed:
               value:
-                $ref: ../examples/responses/Error.yaml
+                $ref: ../examples/ResponseError.yaml
 post:
   operationId: postUsers
   summary: 新規ユーザ登録
@@ -52,29 +52,29 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../schemas/requests/PostUsers.yaml
+          $ref: ../components/schemas/RequestPostUsers.yaml
         examples:
           normal:
             value:
-              $ref: ../examples/requests/PostUsers.yaml
+              $ref: ../examples/RequestPostUsers.yaml
   responses:
     200:
       description: 処理成功時
       content:
         application/json:
           schema:
-            $ref: ../schemas/responses/Empty.yaml
+            $ref: ../components/schemas/ResponseEmpty.yaml
           examples:
             succeeded:
               value:
-                $ref: ../schemas/responses/Empty.yaml
+                $ref: ../components/schemas/ResponseEmpty.yaml
     500:
       description: 処理失敗時
       content:
         application/problem+json:
           schema:
-            $ref: ../schemas/responses/Error.yaml
+            $ref: ../components/schemas/ResponseError.yaml
           examples:
             processingFailed:
               value:
-                $ref: ../examples/responses/Error.yaml
+                $ref: ../examples/ResponseError.yaml

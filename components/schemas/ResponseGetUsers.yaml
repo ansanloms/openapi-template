@@ -17,4 +17,4 @@ properties:
   data:
     type: array
     items:
-      $ref: "../models/User.yaml"
+      $ref: "./User.yaml"

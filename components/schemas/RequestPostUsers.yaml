@@ -1,20 +1,13 @@
 type: object
-description:
-  $ref: "./descriptions/User.md"
 required:
-  - id
   - email
   - status
 properties:
-  id:
-    type: integer
-    format: int64
-    description: ユーザ ID
   email:
     type: string
     format: email
     description: メールアドレス
     x-faker: internet.exampleEmail
   status:
-    $ref: "../enums/Status.yaml"
+    $ref: "./EnumStatus.yaml"
     description: ユーザ種別
