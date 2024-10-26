@@ -1,4 +1,4 @@
-import { Command } from "cliffy/command/mod.ts";
+import { Command } from "@cliffy/command";
 import { STATUS_CODE, STATUS_TEXT } from "@std/http";
 import { contentType } from "@std/media-types";
 import { dirname, extname, fromFileUrl, join } from "@std/path";

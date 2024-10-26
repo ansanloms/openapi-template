@@ -1,0 +1,15 @@
+extends:
+  - recommended-strict
+
+apis:
+  backend:
+    root: ./api.yaml
+plugins:
+  - "./redocly/plugins/index.js"
+rules:
+  info-license: off
+  no-invalid-media-type-examples: off
+  operation-2xx-response: off
+  operation-4xx-response: off
+preprocessors:
+  my/bundle-examples: on
