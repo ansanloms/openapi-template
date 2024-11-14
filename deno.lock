@@ -9,18 +9,18 @@
     "jsr:@std/encoding@^1.0.5": "1.0.5",
     "jsr:@std/fmt@^1.0.3": "1.0.3",
     "jsr:@std/fmt@~1.0.2": "1.0.3",
-    "jsr:@std/http@1.0.9": "1.0.9",
-    "jsr:@std/media-types@1.0.3": "1.0.3",
-    "jsr:@std/media-types@^1.0.3": "1.0.3",
+    "jsr:@std/http@1.0.10": "1.0.10",
+    "jsr:@std/media-types@1.1.0": "1.1.0",
+    "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.4",
-    "jsr:@std/path@1.0.7": "1.0.7",
-    "jsr:@std/path@^1.0.7": "1.0.7",
-    "jsr:@std/streams@^1.0.7": "1.0.7",
+    "jsr:@std/path@1.0.8": "1.0.8",
+    "jsr:@std/path@^1.0.8": "1.0.8",
+    "jsr:@std/streams@^1.0.8": "1.0.8",
     "jsr:@std/text@~1.0.7": "1.0.8",
     "jsr:@std/yaml@1.0.5": "1.0.5",
     "npm:@proofdict/textlint-rule-proofdict@3.1.2": "3.1.2",
     "npm:@redocly/cli@^1.25.9": "1.25.9_react@18.3.1_core-js@3.38.1_mobx@6.13.5_react-dom@18.3.1__react@18.3.1_styled-components@6.1.13__react@18.3.1__react-dom@18.3.1___react@18.3.1",
-    "npm:@redocly/openapi-core@1.25.9": "1.25.9",
+    "npm:@redocly/openapi-core@1.25.11": "1.25.11",
     "npm:@stoplight/prism-cli@^5.10.0": "5.10.0",
     "npm:textlint-filter-rule-comments@1.2.2": "1.2.2_textlint@14.3.0",
     "npm:textlint-rule-preset-ja-spacing@2.4.3": "2.4.3",
@@ -62,29 +62,29 @@
     "@std/fmt@1.0.3": {
       "integrity": "97765c16aa32245ff4e2204ecf7d8562496a3cb8592340a80e7e554e0bb9149f"
     },
-    "@std/http@1.0.9": {
-      "integrity": "d409fc319a5e8d4a154e576c758752e9700282d74f31357a12fec6420f9ecb6c",
+    "@std/http@1.0.10": {
+      "integrity": "4e32d11493ab04e3ef09f104f0cb9beb4228b1d4b47c5469573c2c294c0d3692",
       "dependencies": [
         "jsr:@std/cli",
         "jsr:@std/encoding",
         "jsr:@std/fmt@^1.0.3",
-        "jsr:@std/media-types@^1.0.3",
+        "jsr:@std/media-types@^1.1.0",
         "jsr:@std/net",
-        "jsr:@std/path@^1.0.7",
+        "jsr:@std/path@^1.0.8",
         "jsr:@std/streams"
       ]
     },
-    "@std/media-types@1.0.3": {
-      "integrity": "b12d30a7852f7578f4d210622df713bbfd1cbdd9b4ec2eaf5c1845ab70bab159"
+    "@std/media-types@1.1.0": {
+      "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
     },
     "@std/net@1.0.4": {
       "integrity": "2f403b455ebbccf83d8a027d29c5a9e3a2452fea39bb2da7f2c04af09c8bc852"
     },
-    "@std/path@1.0.7": {
-      "integrity": "76a689e07f0e15dcc6002ec39d0866797e7156629212b28f27179b8a5c3b33a1"
+    "@std/path@1.0.8": {
+      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
     },
-    "@std/streams@1.0.7": {
-      "integrity": "1a93917ca0c58c01b2bfb93647189229b1702677f169b6fb61ad6241cd2e499b"
+    "@std/streams@1.0.8": {
+      "integrity": "b41332d93d2cf6a82fe4ac2153b930adf1a859392931e2a19d9fabfb6f154fb3"
     },
     "@std/text@1.0.8": {
       "integrity": "40ba34caa095f393e78796e5eda37b8b4e2cc6cfd6f51f34658ad7487b1451e4"
@@ -115,8 +115,8 @@
         "@babel/types"
       ]
     },
-    "@babel/runtime@7.25.7": {
-      "integrity": "sha512-FjoyLe754PMiYsFaN5C94ttGiOmBNYTf6pLr4xXHAT5uctHb092PBszndLDR5XA/jghQvn4n7JMHl7dmTgbm9w==",
+    "@babel/runtime@7.26.0": {
+      "integrity": "sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==",
       "dependencies": [
         "regenerator-runtime"
       ]
@@ -264,7 +264,7 @@
     "@redocly/cli@1.25.9_react@18.3.1_core-js@3.38.1_mobx@6.13.5_react-dom@18.3.1__react@18.3.1_styled-components@6.1.13__react@18.3.1__react-dom@18.3.1___react@18.3.1": {
       "integrity": "sha512-dIQdZGFA1ZqXgE+az0P/5LrhD9evE+AfEen2uTR/EY2e/HdwC2m0aFMaLAMUSdwFYmOmHd8JishUh67TGlBesQ==",
       "dependencies": [
-        "@redocly/openapi-core",
+        "@redocly/openapi-core@1.25.9",
         "abort-controller",
         "chokidar",
         "colorette",
@@ -274,7 +274,7 @@
         "glob@7.2.3",
         "handlebars",
         "mobx",
-        "node-fetch",
+        "node-fetch@2.7.0",
         "pluralize@8.0.0",
         "react",
         "react-dom",
@@ -288,18 +288,37 @@
     "@redocly/config@0.15.0": {
       "integrity": "sha512-QmzuqbhzrbiktRGw+FV7iim+TsfQRU8crJb2s7ls8gP+BMkE1RHZnmJ1lAA/QwzyXbEmKZeGFTdM6PWuRwNlRA=="
     },
-    "@redocly/openapi-core@1.25.9": {
-      "integrity": "sha512-tod9bhIxBJQOeGQ3Ot5Zk707Wcg5YgEcEG766cGxwHqjRUNF5kwZnleBO7CpaLusOMWnQefj7RfFWLZS+IqnhA==",
+    "@redocly/config@0.16.0": {
+      "integrity": "sha512-t9jnODbUcuANRSl/K4L9nb12V+U5acIHnVSl26NWrtSdDZVtoqUXk2yGFPZzohYf62cCfEQUT8ouJ3bhPfpnJg=="
+    },
+    "@redocly/openapi-core@1.25.11": {
+      "integrity": "sha512-bH+a8izQz4fnKROKoX3bEU8sQ9rjvEIZOqU6qTmxlhOJ0NsKa5e+LmU18SV0oFeg5YhWQhhEDihXkvKJ1wMMNQ==",
       "dependencies": [
         "@redocly/ajv",
-        "@redocly/config",
+        "@redocly/config@0.16.0",
         "colorette",
         "https-proxy-agent@7.0.5",
         "js-levenshtein",
         "js-yaml@4.1.0",
         "lodash.isequal",
         "minimatch@5.1.6",
-        "node-fetch",
+        "node-fetch@2.7.0",
+        "pluralize@8.0.0",
+        "yaml-ast-parser"
+      ]
+    },
+    "@redocly/openapi-core@1.25.9": {
+      "integrity": "sha512-tod9bhIxBJQOeGQ3Ot5Zk707Wcg5YgEcEG766cGxwHqjRUNF5kwZnleBO7CpaLusOMWnQefj7RfFWLZS+IqnhA==",
+      "dependencies": [
+        "@redocly/ajv",
+        "@redocly/config@0.15.0",
+        "colorette",
+        "https-proxy-agent@7.0.5",
+        "js-levenshtein",
+        "js-yaml@4.1.0",
+        "lodash.isequal",
+        "minimatch@5.1.6",
+        "node-fetch@2.7.0",
         "pluralize@8.0.0",
         "yaml-ast-parser"
       ]
@@ -389,7 +408,7 @@
         "fp-ts",
         "json-schema-faker",
         "lodash",
-        "node-fetch",
+        "node-fetch@2.7.0",
         "pino",
         "signale",
         "split2",
@@ -419,7 +438,7 @@
         "io-ts",
         "lodash",
         "micri",
-        "node-fetch",
+        "node-fetch@2.7.0",
         "parse-prefer-header",
         "tslib",
         "type-is"
@@ -449,7 +468,7 @@
         "https-proxy-agent@5.0.1",
         "json-schema-faker",
         "lodash",
-        "node-fetch",
+        "node-fetch@2.7.0",
         "parse-multipart-data",
         "pino",
         "tslib",
@@ -1230,7 +1249,7 @@
     "cross-fetch@3.1.8": {
       "integrity": "sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==",
       "dependencies": [
-        "node-fetch"
+        "node-fetch@2.7.0"
       ]
     },
     "cross-spawn@7.0.3": {
@@ -1641,7 +1660,7 @@
     "fetch-ponyfill@6.1.1": {
       "integrity": "sha512-rWLgTr5A44/XhvCQPYj0X9Tc+cjUaHofSM4lcwjc9MavD5lkjIhJ+h8JQlavPlTIgDpwhuRozaIykBvX9ItaSA==",
       "dependencies": [
-        "node-fetch"
+        "node-fetch@2.6.13"
       ]
     },
     "figures@2.0.0": {
@@ -2181,7 +2200,7 @@
     "isomorphic-fetch@3.0.0": {
       "integrity": "sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==",
       "dependencies": [
-        "node-fetch",
+        "node-fetch@2.7.0",
         "whatwg-fetch"
       ]
     },
@@ -2675,6 +2694,12 @@
     },
     "node-fetch@2.6.13": {
       "integrity": "sha512-StxNAxh15zr77QvvkmveSQ8uCQ4+v5FkvNTj0OESmiHu+VRi/gXArXtkWMElOsOUNLtUEvI4yS+rdtOHZTwlQA==",
+      "dependencies": [
+        "whatwg-url"
+      ]
+    },
+    "node-fetch@2.7.0": {
+      "integrity": "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==",
       "dependencies": [
         "whatwg-url"
       ]
@@ -3192,7 +3217,7 @@
       "integrity": "sha512-52rz/xJtpUBc3Y/GAkaX03czKhQXTxoU7WnkXNzRLuGwiGb/iEO4OgwcgQqtwHWrYNaZXTyqZ4MAVXpi/e1gAg==",
       "dependencies": [
         "@cfaester/enzyme-adapter-react-18",
-        "@redocly/openapi-core",
+        "@redocly/openapi-core@1.25.11",
         "classnames",
         "core-js",
         "decko",
@@ -3657,7 +3682,7 @@
       "integrity": "sha512-upi/0ZGkYgEcLeGieoz8gT74oWHA0E7JivX7aN9mAf+Tc7BQoRBvnIGHoPDw+f9TXTW4s6kGYCZJtauP6OYp7g==",
       "dependencies": [
         "call-me-maybe",
-        "node-fetch",
+        "node-fetch@2.7.0",
         "node-fetch-h2",
         "node-readfiles",
         "oas-kit-common",
@@ -4540,7 +4565,7 @@
     "https://deno.land/x/denoflate@1.2.1/mod.ts": "f5628e44b80b3d80ed525afa2ba0f12408e3849db817d47a883b801f9ce69dd6",
     "https://deno.land/x/denoflate@1.2.1/pkg/denoflate.js": "b9f9ad9457d3f12f28b1fb35c555f57443427f74decb403113d67364e4f2caf4",
     "https://deno.land/x/denoflate@1.2.1/pkg/denoflate_bg.wasm.js": "d581956245407a2115a3d7e8d85a9641c032940a8e810acbd59ca86afd34d44d",
-    "https://deno.land/x/esbuild@v0.23.1/mod.js": "f8a2bf4a1e4dcffd32690fc4562dae780405ce52ee815a094eb8b5f6e591da53",
+    "https://deno.land/x/esbuild@v0.24.0/mod.js": "15b51f08198c373555700a695b6c6630a86f2c254938e81be7711eb6d4edc74e",
     "https://deno.land/x/esbuild_deno_loader@0.9.0/deps.ts": "08972bc7edd45e9e57cfc9f9a8628957c58913dcc96273806d7c228edbb7711f",
     "https://deno.land/x/esbuild_deno_loader@0.9.0/mod.ts": "00decaf22c0fec5d80724f0bb48caeafe936f5f75e31bb1138a970961fac0bbd",
     "https://deno.land/x/esbuild_deno_loader@0.9.0/src/deno.ts": "bd423a6d8724152e9d6187adcb46139462b1328f81f92ae803733a7c0b202812",
@@ -4555,13 +4580,13 @@
   "workspace": {
     "dependencies": [
       "jsr:@cliffy/command@1.0.0-rc.7",
-      "jsr:@std/http@1.0.9",
-      "jsr:@std/media-types@1.0.3",
-      "jsr:@std/path@1.0.7",
+      "jsr:@std/http@1.0.10",
+      "jsr:@std/media-types@1.1.0",
+      "jsr:@std/path@1.0.8",
       "jsr:@std/yaml@1.0.5",
       "npm:@proofdict/textlint-rule-proofdict@3.1.2",
       "npm:@redocly/cli@^1.25.9",
-      "npm:@redocly/openapi-core@1.25.9",
+      "npm:@redocly/openapi-core@1.25.11",
       "npm:@stoplight/prism-cli@^5.10.0",
       "npm:textlint-filter-rule-comments@1.2.2",
       "npm:textlint-rule-preset-ja-spacing@2.4.3",
