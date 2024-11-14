@@ -35,6 +35,18 @@ module.exports = {
         // 文末以外でも敬体(ですます調)と常体(である調)を厳しくチェックするかどうか。
         strict: true,
       },
+
+      // https://github.com/textlint-rule/textlint-rule-no-exclamation-question-mark
+      "no-exclamation-question-mark": {
+        allow: [],
+      },
+
+      // https://github.com/textlint-ja/textlint-rule-no-doubled-joshi
+      "no-doubled-joshi": {
+        // 助詞の token 同士の間隔値が 1 以下ならエラーにする。
+        // 間隔値は 1 から開始されます。
+        min_interval: 1,
+      },
     },
 
     // https://github.com/textlint-ja/textlint-rule-preset-ja-spacing
