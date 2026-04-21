@@ -1,8 +1,8 @@
-import type { Oas3PreprocessorSet } from "@redocly/openapi-core/src/oas-types.ts";
+import type { Oas3Preprocessor } from "@redocly/openapi-core";
 
 import { BundleExamples } from "./preprocessors/bundle-examples.ts";
 
-export const preprocessors: Oas3PreprocessorSet = {
+export const preprocessors: Record<string, Oas3Preprocessor> = {
   "bundle-examples": BundleExamples,
 };
 

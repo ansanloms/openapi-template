@@ -67,7 +67,7 @@ post:
           examples:
             succeeded:
               value:
-                $ref: ../components/schemas/ResponseEmpty.yaml
+                $ref: ../examples/ResponseEmpty.yaml
     500:
       description: 処理失敗時
       content:

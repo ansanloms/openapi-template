@@ -1,25 +1,27 @@
 type: object
+description: RFC 9457 Problem Details for HTTP APIs
 required:
-  - status
-  - code
+  - type
   - title
-  - instance
+  - status
 properties:
-  status:
-    type: number
-    description: HTTP ステータスコード
-  code:
+  type:
     type: string
-    description: エラーコード
+    format: uri
+    default: "about:blank"
+    description: 問題種別を識別する URI reference
   title:
     type: string
-    description: エラータイトル
+    description: 問題種別の人間可読な簡潔な要約
+  status:
+    type: integer
+    minimum: 100
+    maximum: 599
+    description: HTTP ステータスコード
   detail:
     type: string
-    description: エラー詳細
+    description: 当該インスタンス固有の問題の説明
   instance:
     type: string
-    description: エンドポイント
-  options:
-    type: object
-    description: 付加情報
+    format: uri-reference
+    description: 問題発生インスタンスを識別する URI reference

@@ -1,5 +1,5 @@
+type: "https://example.org/probs/validation-error"
+title: リクエストパラメータが不正です
 status: 400
-code: ERROR-001
-title: エラー
-detail: エラーが発生しました。
-instance: /users
+detail: id は 1 以上の整数で指定してください
+instance: /users/abc

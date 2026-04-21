@@ -1,11 +1,11 @@
 openapi: 3.1.0
 info:
   version: 0.0.1
-  title: OpenAPI Sample
+  title: OpenAPI Example
   description:
     $ref: ./README.md
 servers:
-  - url: "https://api.example.com"
+  - url: "https://api.example.org"
     description: Production Server
 paths:
   /users:
@@ -28,3 +28,10 @@ components:
       $ref: ./components/schemas/ResponseGetUsers.yaml
     ResponseGetUsersId:
       $ref: ./components/schemas/ResponseGetUsersId.yaml
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

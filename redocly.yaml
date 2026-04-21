@@ -2,7 +2,7 @@ extends:
   - recommended-strict
 
 apis:
-  backend:
+  example:
     root: ./api.yaml
 plugins:
   - "./redocly/plugins/index.js"

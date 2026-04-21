@@ -41,6 +41,14 @@ put:
     - users
   description:
     $ref: ./descriptions/putUsersId.md
+  parameters:
+    - in: path
+      name: id
+      required: true
+      description: ユーザ ID
+      schema:
+        type: integer
+        format: int64
   requestBody:
     description: 会員情報
     content:

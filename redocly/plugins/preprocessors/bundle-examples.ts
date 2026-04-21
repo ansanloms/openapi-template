@@ -1,82 +1,83 @@
-import type { Oas3preprocessor } from "@redocly/openapi-core/src/visitors.ts";
+import type { Oas3Preprocessor } from "@redocly/openapi-core";
 import * as path from "@std/path";
 import * as yaml from "@std/yaml";
 
-const getYaml = (p: string) => {
+type YamlContainer = Record<string, unknown> | unknown[];
+
+const isContainer = (value: unknown): value is YamlContainer =>
+  typeof value === "object" && value !== null;
+
+const getYaml = (p: string): Record<string, unknown> => {
   const result = yaml.parse(Deno.readTextFileSync(p));
-  return typeof result === "object" && result !== null ? result : {};
+  return typeof result === "object" && result !== null && !Array.isArray(result)
+    ? (result as Record<string, unknown>)
+    : {};
 };
 
-const bundle = (
-  target: Record<string, unknown> | unknown[],
-  baseDir: string,
-) => {
-  let result: Record<string, unknown> | unknown[] = Array.isArray(target)
-    ? []
-    : {};
+const bundle = (target: YamlContainer, baseDir: string): YamlContainer => {
+  if (Array.isArray(target)) {
+    return target.map((value) =>
+      isContainer(value) ? bundle(value, baseDir) : value
+    );
+  }
 
+  const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(target)) {
     if (
       key === "$ref" && typeof value === "string" &&
-      path.extname(value) === ".yaml" && !Array.isArray(target)
+      path.extname(value) === ".yaml"
     ) {
       const targetPath = path.join(baseDir, value);
-      result = {
-        ...result,
-        ...bundle(getYaml(targetPath), path.dirname(targetPath)),
-      };
+      Object.assign(
+        result,
+        bundle(getYaml(targetPath), path.dirname(targetPath)),
+      );
     } else {
-      result[Array.isArray(target) ? Number(key) : key] =
-        typeof value === "object" && value !== null
-          ? bundle(value, baseDir)
-          : value;
+      result[key] = isContainer(value) ? bundle(value, baseDir) : value;
     }
   }
-
   return result;
 };
 
-const bundleEntry = (
-  target: Record<string, unknown> | unknown[],
-  baseDir: string,
-) => {
+const bundleEntry = (target: YamlContainer, baseDir: string): YamlContainer => {
   if (Array.isArray(target)) {
-    return target.map((value) => bundleEntry(value, baseDir));
-  } else {
-    return Object.fromEntries(
-      Object.entries(target).map(([key, value]) => {
-        if (typeof value === "object" && value !== null) {
-          return [
-            key,
-            key === "examples"
-              ? bundle(value, baseDir)
-              : bundleEntry(value, baseDir),
-          ];
-        } else {
-          return [key, value];
-        }
-      }),
+    return target.map((value) =>
+      isContainer(value) ? bundleEntry(value, baseDir) : value
     );
   }
+
+  return Object.fromEntries(
+    Object.entries(target).map(([key, value]) => {
+      if (isContainer(value)) {
+        return [
+          key,
+          key === "examples"
+            ? bundle(value, baseDir)
+            : bundleEntry(value, baseDir),
+        ];
+      }
+      return [key, value];
+    }),
+  );
 };
 
-export const BundleExamples: Oas3preprocessor = () => ({
+export const BundleExamples: Oas3Preprocessor = () => ({
   Operation: {
     leave(target, ctx) {
       const basedir = path.dirname(ctx.location.source.absoluteRef);
 
-      if (target.requestBody) {
+      if (target.requestBody && isContainer(target.requestBody)) {
         target.requestBody = bundleEntry(
-          target.requestBody,
+          target.requestBody as YamlContainer,
           basedir,
-        );
+        ) as typeof target.requestBody;
       }
 
-      if (target.responses) {
+      if (target.responses && isContainer(target.responses)) {
         target.responses = bundleEntry(
-          target.responses,
+          target.responses as YamlContainer,
           basedir,
-        );
+        ) as typeof target.responses;
       }
     },
   },
