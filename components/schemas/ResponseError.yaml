@@ -9,19 +9,19 @@ properties:
     type: string
     format: uri
     default: "about:blank"
-    description: 問題種別を識別する URI reference
+    description: 問題種別を識別する URI reference。
   title:
     type: string
-    description: 問題種別の人間可読な簡潔な要約
+    description: 問題種別の人間可読な簡潔な要約。
   status:
     type: integer
     minimum: 100
     maximum: 599
-    description: HTTP ステータスコード
+    description: HTTP ステータスコード。
   detail:
     type: string
-    description: 当該インスタンス固有の問題の説明
+    description: 当該インスタンス固有の問題の説明。
   instance:
     type: string
     format: uri-reference
-    description: 問題発生インスタンスを識別する URI reference
+    description: 問題発生インスタンスを識別する URI reference。

@@ -7,13 +7,13 @@ required:
 properties:
   offset:
     type: integer
-    description: 取得開始位置
+    description: 取得開始位置。
   limit:
     type: integer
-    description: 取得件数
+    description: 取得件数。
   count:
     type: integer
-    description: 総件数
+    description: 総件数。
   data:
     type: array
     items:

@@ -5,13 +5,13 @@ info:
   description:
     $ref: ./README.md
 servers:
-  - url: "https://api.example.org"
+  - url: https://api.example.org
     description: Production Server
 paths:
   /users:
     $ref: ./paths/users.yaml
-  "/users/{id}":
-    $ref: "./paths/users.{id}.yaml"
+  /users/{id}:
+    $ref: ./paths/users.{id}.yaml
 components:
   schemas:
     User:

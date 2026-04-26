@@ -1,6 +1,6 @@
 get:
   operationId: getUsers
-  summary: ユーザ一覧の取得
+  summary: ユーザ一覧の取得。
   tags:
     - users
   description:
@@ -8,7 +8,7 @@ get:
   parameters:
     - in: query
       name: ids[]
-      description: 絞り込みユーザ ID
+      description: 絞り込みユーザ ID。
       required: false
       schema:
         type: array
@@ -21,7 +21,7 @@ get:
           - 3
   responses:
     200:
-      description: 処理成功時
+      description: 処理成功時。
       content:
         application/json:
           schema:
@@ -31,7 +31,7 @@ get:
               value:
                 $ref: ../examples/ResponseGetUsers.yaml
     500:
-      description: 処理失敗時
+      description: 処理失敗時。
       content:
         application/problem+json:
           schema:
@@ -42,13 +42,13 @@ get:
                 $ref: ../examples/ResponseError.yaml
 post:
   operationId: postUsers
-  summary: 新規ユーザ登録
+  summary: 新規ユーザ登録。
   tags:
     - users
   description:
     $ref: ./descriptions/postUsers.md
   requestBody:
-    description: 会員情報
+    description: 会員情報。
     content:
       application/json:
         schema:
@@ -59,7 +59,7 @@ post:
               $ref: ../examples/RequestPostUsers.yaml
   responses:
     200:
-      description: 処理成功時
+      description: 処理成功時。
       content:
         application/json:
           schema:
@@ -69,7 +69,7 @@ post:
               value:
                 $ref: ../examples/ResponseEmpty.yaml
     500:
-      description: 処理失敗時
+      description: 処理失敗時。
       content:
         application/problem+json:
           schema:

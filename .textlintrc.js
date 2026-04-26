@@ -53,6 +53,11 @@ module.exports = {
       // 助詞の連続をの設定。
       // 「かどうか」とかあるし文章伝わる割と対応しんどいので一旦無効で。
       "no-doubled-joshi": false,
+
+      // 文末の句点忘れを --fix で自動的に補完する。
+      "ja-no-mixed-period": {
+        forceAppendPeriod: true,
+      },
     },
 
     // https://github.com/textlint-ja/textlint-rule-preset-ja-spacing
