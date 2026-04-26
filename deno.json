@@ -9,8 +9,8 @@
   ],
   "imports": {
     "@proofdict/textlint-rule-proofdict": "npm:@proofdict/textlint-rule-proofdict@3.1.2",
-    "@redocly/cli": "npm:@redocly/cli@2.29.0",
-    "@redocly/openapi-core": "npm:@redocly/openapi-core@2.29.0",
+    "@redocly/cli": "npm:@redocly/cli@2.30.0",
+    "@redocly/openapi-core": "npm:@redocly/openapi-core@2.30.0",
     "@std/path": "jsr:@std/path@1.1.4",
     "@std/yaml": "jsr:@std/yaml@1.1.0",
     "@stoplight/elements": "npm:@stoplight/elements@9.0.19",
@@ -18,7 +18,7 @@
     "@textlint-ja/textlint-rule-preset-ai-writing": "npm:@textlint-ja/textlint-rule-preset-ai-writing@1.6.3",
     "http-server": "npm:http-server@14.1.1",
     "openapi-types": "npm:openapi-types@12.1.3",
-    "textlint": "npm:textlint@15.5.4",
+    "textlint": "npm:textlint@15.6.0",
     "textlint-rule-preset-ja-spacing": "npm:textlint-rule-preset-ja-spacing@2.4.3",
     "textlint-rule-preset-ja-technical-writing": "npm:textlint-rule-preset-ja-technical-writing@12.0.2",
     "textlint-rule-preset-jtf-style": "npm:textlint-rule-preset-jtf-style@3.0.3"
