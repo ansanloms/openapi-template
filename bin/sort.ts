@@ -1,4 +1,4 @@
-import * as yaml from "@std/yaml";
+import * as yaml from "yaml";
 import * as path from "@std/path";
 import type { OpenAPIV3_1 } from "openapi-types";
 
