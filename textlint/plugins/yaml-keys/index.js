@@ -40,10 +40,10 @@ var require_identity = __commonJS({
     var NODE_TYPE = Symbol.for("yaml.node.type");
     var isAlias = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === ALIAS;
     var isDocument = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === DOC;
-    var isMap = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === MAP;
+    var isMap2 = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === MAP;
     var isPair = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === PAIR;
-    var isScalar = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SCALAR;
-    var isSeq = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SEQ;
+    var isScalar2 = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SCALAR;
+    var isSeq2 = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SEQ;
     function isCollection(node) {
       if (node && typeof node === "object") switch (node[NODE_TYPE]) {
         case MAP:
@@ -62,7 +62,7 @@ var require_identity = __commonJS({
       }
       return false;
     }
-    var hasAnchor = (node) => (isScalar(node) || isCollection(node)) && !!node.anchor;
+    var hasAnchor = (node) => (isScalar2(node) || isCollection(node)) && !!node.anchor;
     exports.ALIAS = ALIAS;
     exports.DOC = DOC;
     exports.MAP = MAP;
@@ -74,11 +74,11 @@ var require_identity = __commonJS({
     exports.isAlias = isAlias;
     exports.isCollection = isCollection;
     exports.isDocument = isDocument;
-    exports.isMap = isMap;
+    exports.isMap = isMap2;
     exports.isNode = isNode;
     exports.isPair = isPair;
-    exports.isScalar = isScalar;
-    exports.isSeq = isSeq;
+    exports.isScalar = isScalar2;
+    exports.isSeq = isSeq2;
   }
 });
 
@@ -236,10 +236,10 @@ var require_directives = __commonJS({
     };
     var escapeTagName = (tn) => tn.replace(/[!,[\]{}]/g, (ch) => escapeChars[ch]);
     var Directives = class _Directives {
-      constructor(yaml2, tags) {
+      constructor(yaml, tags) {
         this.docStart = null;
         this.docEnd = false;
-        this.yaml = Object.assign({}, _Directives.defaultYaml, yaml2);
+        this.yaml = Object.assign({}, _Directives.defaultYaml, yaml);
         this.tags = Object.assign({}, _Directives.defaultTags, tags);
       }
       clone() {
@@ -2198,12 +2198,12 @@ var require_bool = __commonJS({
 var require_stringifyNumber = __commonJS({
   "../../../../.cache/deno/npm/registry.npmjs.org/yaml/2.8.3/dist/stringify/stringifyNumber.js"(exports) {
     "use strict";
-    function stringifyNumber({ format: format3, minFractionDigits, tag, value }) {
+    function stringifyNumber({ format, minFractionDigits, tag, value }) {
       if (typeof value === "bigint") return String(value);
       const num = typeof value === "number" ? value : Number(value);
       if (!isFinite(num)) return isNaN(num) ? ".nan" : num < 0 ? "-.inf" : ".inf";
       let n = Object.is(value, -0) ? "-0" : JSON.stringify(value);
-      if (!format3 && minFractionDigits && (!tag || tag === "tag:yaml.org,2002:float") && /^\d/.test(n)) {
+      if (!format && minFractionDigits && (!tag || tag === "tag:yaml.org,2002:float") && /^\d/.test(n)) {
         let i = n.indexOf(".");
         if (i < 0) {
           i = n.length;
@@ -3962,9 +3962,9 @@ var require_resolve_flow_collection = __commonJS({
     var blockMsg = "Block collections are not allowed within flow collections";
     var isBlock = (token) => token && (token.type === "block-map" || token.type === "block-seq");
     function resolveFlowCollection({ composeNode, composeEmptyNode }, ctx, fc, onError, tag) {
-      const isMap = fc.start.source === "{";
-      const fcName = isMap ? "flow map" : "flow sequence";
-      const NodeClass = tag?.nodeClass ?? (isMap ? YAMLMap.YAMLMap : YAMLSeq.YAMLSeq);
+      const isMap2 = fc.start.source === "{";
+      const fcName = isMap2 ? "flow map" : "flow sequence";
+      const NodeClass = tag?.nodeClass ?? (isMap2 ? YAMLMap.YAMLMap : YAMLSeq.YAMLSeq);
       const coll = new NodeClass(ctx.schema);
       coll.flow = true;
       const atRoot = ctx.atRoot;
@@ -3994,7 +3994,7 @@ var require_resolve_flow_collection = __commonJS({
             offset = props.end;
             continue;
           }
-          if (!isMap && ctx.options.strict && utilContainsNewline.containsNewline(key)) onError(key, "MULTILINE_IMPLICIT_KEY", "Implicit keys of flow sequence pairs need to be on a single line");
+          if (!isMap2 && ctx.options.strict && utilContainsNewline.containsNewline(key)) onError(key, "MULTILINE_IMPLICIT_KEY", "Implicit keys of flow sequence pairs need to be on a single line");
         }
         if (i === 0) {
           if (props.comma) onError(props.comma, "UNEXPECTED_TOKEN", `Unexpected , in ${fcName}`);
@@ -4023,7 +4023,7 @@ var require_resolve_flow_collection = __commonJS({
             }
           }
         }
-        if (!isMap && !sep && !props.found) {
+        if (!isMap2 && !sep && !props.found) {
           const valueNode = value ? composeNode(ctx, value, props, onError) : composeEmptyNode(ctx, props.end, sep, null, props, onError);
           coll.items.push(valueNode);
           offset = valueNode.range[2];
@@ -4044,7 +4044,7 @@ var require_resolve_flow_collection = __commonJS({
             startOnNewline: false
           });
           if (valueProps.found) {
-            if (!isMap && !props.found && ctx.options.strict) {
+            if (!isMap2 && !props.found && ctx.options.strict) {
               if (sep) for (const st of sep) {
                 if (st === valueProps.found) break;
                 if (st.type === "newline") {
@@ -4067,7 +4067,7 @@ var require_resolve_flow_collection = __commonJS({
           }
           const pair = new Pair.Pair(keyNode, valueNode);
           if (ctx.options.keepSourceTokens) pair.srcToken = collItem;
-          if (isMap) {
+          if (isMap2) {
             const map = coll;
             if (utilMapIncludes.mapIncludes(ctx, map.items, keyNode)) onError(keyStart, "DUPLICATE_KEY", "Map keys must be unique");
             map.items.push(pair);
@@ -4086,7 +4086,7 @@ var require_resolve_flow_collection = __commonJS({
           offset = valueNode ? valueNode.range[2] : valueProps.end;
         }
       }
-      const expectedEnd = isMap ? "}" : "]";
+      const expectedEnd = isMap2 ? "}" : "]";
       const [ce, ...ee] = fc.end;
       let cePos = offset;
       if (ce?.source === expectedEnd) cePos = ce.offset + ce.source.length;
@@ -5448,7 +5448,7 @@ var require_cst = __commonJS({
     var FLOW_END = "";
     var SCALAR = "";
     var isCollection = (token) => !!token && "items" in token;
-    var isScalar = (token) => !!token && (token.type === "scalar" || token.type === "single-quoted-scalar" || token.type === "double-quoted-scalar" || token.type === "block-scalar");
+    var isScalar2 = (token) => !!token && (token.type === "scalar" || token.type === "single-quoted-scalar" || token.type === "double-quoted-scalar" || token.type === "block-scalar");
     function prettyToken(token) {
       switch (token) {
         case BOM:
@@ -5532,7 +5532,7 @@ var require_cst = __commonJS({
     exports.FLOW_END = FLOW_END;
     exports.SCALAR = SCALAR;
     exports.isCollection = isCollection;
-    exports.isScalar = isScalar;
+    exports.isScalar = isScalar2;
     exports.prettyToken = prettyToken;
     exports.tokenType = tokenType;
   }
@@ -6063,7 +6063,7 @@ var require_lexer = __commonJS({
 var require_line_counter = __commonJS({
   "../../../../.cache/deno/npm/registry.npmjs.org/yaml/2.8.3/dist/parse/line-counter.js"(exports) {
     "use strict";
-    var LineCounter = class {
+    var LineCounter2 = class {
       constructor() {
         this.lineStarts = [];
         this.addNewLine = (offset) => this.lineStarts.push(offset);
@@ -6091,7 +6091,7 @@ var require_line_counter = __commonJS({
         };
       }
     };
-    exports.LineCounter = LineCounter;
+    exports.LineCounter = LineCounter2;
   }
 });
 
@@ -7123,7 +7123,7 @@ var require_public_api = __commonJS({
         empty: true
       }, composer$1.streamInfo());
     }
-    function parseDocument(source, options = {}) {
+    function parseDocument2(source, options = {}) {
       const { lineCounter: lineCounter2, prettyErrors } = parseOptions(options);
       const parser$1 = new parser.Parser(lineCounter2?.addNewLine);
       const composer$1 = new composer.Composer(options);
@@ -7141,14 +7141,14 @@ var require_public_api = __commonJS({
       }
       return doc;
     }
-    function parse4(src, reviver, options) {
+    function parse(src, reviver, options) {
       let _reviver = void 0;
       if (typeof reviver === "function") {
         _reviver = reviver;
       } else if (options === void 0 && reviver && typeof reviver === "object") {
         options = reviver;
       }
-      const doc = parseDocument(src, options);
+      const doc = parseDocument2(src, options);
       if (!doc) return null;
       doc.warnings.forEach((warning) => log.warn(doc.options.logLevel, warning));
       if (doc.errors.length > 0) {
@@ -7182,9 +7182,9 @@ var require_public_api = __commonJS({
       if (identity.isDocument(value) && !_replacer) return value.toString(options);
       return new Document.Document(value, _replacer, options).toString(options);
     }
-    exports.parse = parse4;
+    exports.parse = parse;
     exports.parseAllDocuments = parseAllDocuments;
-    exports.parseDocument = parseDocument;
+    exports.parseDocument = parseDocument2;
     exports.stringify = stringify;
   }
 });
@@ -7241,562 +7241,207 @@ var require_dist = __commonJS({
   }
 });
 
-// deno:https://jsr.io/@std/internal/1.0.13/_os.ts
-function checkWindows() {
-  const global = globalThis;
-  const os = global.Deno?.build?.os;
-  return typeof os === "string" ? os === "windows" : global.navigator?.platform?.startsWith("Win") ?? global.process?.platform?.startsWith("win") ?? false;
-}
-
-// deno:https://jsr.io/@std/internal/1.0.13/os.ts
-var isWindows = checkWindows();
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/assert_path.ts
-function assertPath(path) {
-  if (typeof path !== "string") {
-    throw new TypeError(`Path must be a string, received "${JSON.stringify(path)}"`);
-  }
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/from_file_url.ts
-function assertArg(url) {
-  url = url instanceof URL ? url : new URL(url);
-  if (url.protocol !== "file:") {
-    throw new TypeError(`URL must be a file URL: received "${url.protocol}"`);
-  }
-  return url;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/posix/from_file_url.ts
-function fromFileUrl(url) {
-  url = assertArg(url);
-  return decodeURIComponent(url.pathname.replace(/%(?![0-9A-Fa-f]{2})/g, "%25"));
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/strip_trailing_separators.ts
-function stripTrailingSeparators(segment, isSep) {
-  if (segment.length <= 1) {
-    return segment;
-  }
-  let end = segment.length;
-  for (let i = segment.length - 1; i > 0; i--) {
-    if (isSep(segment.charCodeAt(i))) {
-      end = i;
-    } else {
-      break;
+// textlint/plugins/yaml-keys/index.ts
+var import_yaml = __toESM(require_dist());
+var parseKeyPath = (pathStr) => {
+  const recursive = !pathStr.includes(".");
+  const segments = [];
+  for (const raw of pathStr.split(".")) {
+    let part = raw;
+    let arrayItem = false;
+    if (part.endsWith("[]")) {
+      arrayItem = true;
+      part = part.slice(0, -2);
+    }
+    if (part === "*") {
+      segments.push({
+        type: "anyKey"
+      });
+    } else if (part.length > 0) {
+      segments.push({
+        type: "key",
+        name: part
+      });
+    }
+    if (arrayItem) {
+      segments.push({
+        type: "arrayItem"
+      });
     }
   }
-  return segment.slice(0, end);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/constants.ts
-var CHAR_UPPERCASE_A = 65;
-var CHAR_LOWERCASE_A = 97;
-var CHAR_UPPERCASE_Z = 90;
-var CHAR_LOWERCASE_Z = 122;
-var CHAR_DOT = 46;
-var CHAR_FORWARD_SLASH = 47;
-var CHAR_BACKWARD_SLASH = 92;
-var CHAR_COLON = 58;
-
-// deno:https://jsr.io/@std/path/1.1.4/posix/_util.ts
-function isPosixPathSeparator(code) {
-  return code === CHAR_FORWARD_SLASH;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/windows/_util.ts
-function isPosixPathSeparator2(code) {
-  return code === CHAR_FORWARD_SLASH;
-}
-function isPathSeparator(code) {
-  return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
-}
-function isWindowsDeviceRoot(code) {
-  return code >= CHAR_LOWERCASE_A && code <= CHAR_LOWERCASE_Z || code >= CHAR_UPPERCASE_A && code <= CHAR_UPPERCASE_Z;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/windows/from_file_url.ts
-function fromFileUrl2(url) {
-  url = assertArg(url);
-  let path = decodeURIComponent(url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25")).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
-  if (url.hostname !== "") {
-    path = `\\\\${url.hostname}${path}`;
+  return {
+    segments,
+    recursive,
+    pathString: pathStr
+  };
+};
+var matchesAt = (matcher, currentPath) => {
+  if (matcher.recursive) {
+    if (matcher.segments.length !== 1) return false;
+    const seg = matcher.segments[0];
+    if (seg.type !== "key") return false;
+    return currentPath.length > 0 && currentPath[currentPath.length - 1] === seg.name;
   }
-  return path;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/dirname.ts
-function assertArg2(path) {
-  assertPath(path);
-  if (path.length === 0) return ".";
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/posix/dirname.ts
-function dirname(path) {
-  if (path instanceof URL) {
-    path = fromFileUrl(path);
-  }
-  assertArg2(path);
-  let end = -1;
-  let matchedNonSeparator = false;
-  for (let i = path.length - 1; i >= 1; --i) {
-    if (isPosixPathSeparator(path.charCodeAt(i))) {
-      if (matchedNonSeparator) {
-        end = i;
-        break;
-      }
-    } else {
-      matchedNonSeparator = true;
-    }
-  }
-  if (end === -1) {
-    return isPosixPathSeparator(path.charCodeAt(0)) ? "/" : ".";
-  }
-  return stripTrailingSeparators(path.slice(0, end), isPosixPathSeparator);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/windows/dirname.ts
-function dirname2(path) {
-  if (path instanceof URL) {
-    path = fromFileUrl2(path);
-  }
-  assertArg2(path);
-  const len = path.length;
-  let rootEnd = -1;
-  let end = -1;
-  let matchedSlash = true;
-  let offset = 0;
-  const code = path.charCodeAt(0);
-  if (len > 1) {
-    if (isPathSeparator(code)) {
-      rootEnd = offset = 1;
-      if (isPathSeparator(path.charCodeAt(1))) {
-        let j = 2;
-        let last = j;
-        for (; j < len; ++j) {
-          if (isPathSeparator(path.charCodeAt(j))) break;
-        }
-        if (j < len && j !== last) {
-          last = j;
-          for (; j < len; ++j) {
-            if (!isPathSeparator(path.charCodeAt(j))) break;
-          }
-          if (j < len && j !== last) {
-            last = j;
-            for (; j < len; ++j) {
-              if (isPathSeparator(path.charCodeAt(j))) break;
-            }
-            if (j === len) {
-              return path;
-            }
-            if (j !== last) {
-              rootEnd = offset = j + 1;
-            }
-          }
-        }
-      }
-    } else if (isWindowsDeviceRoot(code)) {
-      if (path.charCodeAt(1) === CHAR_COLON) {
-        rootEnd = offset = 2;
-        if (len > 2) {
-          if (isPathSeparator(path.charCodeAt(2))) rootEnd = offset = 3;
-        }
-      }
-    }
-  } else if (isPathSeparator(code)) {
-    return path;
-  }
-  for (let i = len - 1; i >= offset; --i) {
-    if (isPathSeparator(path.charCodeAt(i))) {
-      if (!matchedSlash) {
-        end = i;
-        break;
-      }
-    } else {
-      matchedSlash = false;
-    }
-  }
-  if (end === -1) {
-    if (rootEnd === -1) return ".";
-    else end = rootEnd;
-  }
-  return stripTrailingSeparators(path.slice(0, end), isPosixPathSeparator2);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/dirname.ts
-function dirname3(path) {
-  return isWindows ? dirname2(path) : dirname(path);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/posix/extname.ts
-function extname(path) {
-  if (path instanceof URL) {
-    path = fromFileUrl(path);
-  }
-  assertPath(path);
-  let startDot = -1;
-  let startPart = 0;
-  let end = -1;
-  let matchedSlash = true;
-  let preDotState = 0;
-  for (let i = path.length - 1; i >= 0; --i) {
-    const code = path.charCodeAt(i);
-    if (isPosixPathSeparator(code)) {
-      if (!matchedSlash) {
-        startPart = i + 1;
-        break;
-      }
+  if (currentPath.length !== matcher.segments.length) return false;
+  for (let i = 0; i < matcher.segments.length; i++) {
+    const seg = matcher.segments[i];
+    const cur = currentPath[i];
+    if (seg.type === "anyKey") {
+      if (cur === "[]") return false;
       continue;
     }
-    if (end === -1) {
-      matchedSlash = false;
-      end = i + 1;
-    }
-    if (code === CHAR_DOT) {
-      if (startDot === -1) startDot = i;
-      else if (preDotState !== 1) preDotState = 1;
-    } else if (startDot !== -1) {
-      preDotState = -1;
-    }
-  }
-  if (startDot === -1 || end === -1 || // We saw a non-dot character immediately before the dot
-  preDotState === 0 || // The (right-most) trimmed path component is exactly '..'
-  preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
-    return "";
-  }
-  return path.slice(startDot, end);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/windows/extname.ts
-function extname2(path) {
-  if (path instanceof URL) {
-    path = fromFileUrl2(path);
-  }
-  assertPath(path);
-  let start = 0;
-  let startDot = -1;
-  let startPart = 0;
-  let end = -1;
-  let matchedSlash = true;
-  let preDotState = 0;
-  if (path.length >= 2 && path.charCodeAt(1) === CHAR_COLON && isWindowsDeviceRoot(path.charCodeAt(0))) {
-    start = startPart = 2;
-  }
-  for (let i = path.length - 1; i >= start; --i) {
-    const code = path.charCodeAt(i);
-    if (isPathSeparator(code)) {
-      if (!matchedSlash) {
-        startPart = i + 1;
-        break;
-      }
+    if (seg.type === "arrayItem") {
+      if (cur !== "[]") return false;
       continue;
     }
-    if (end === -1) {
-      matchedSlash = false;
-      end = i + 1;
-    }
-    if (code === CHAR_DOT) {
-      if (startDot === -1) startDot = i;
-      else if (preDotState !== 1) preDotState = 1;
-    } else if (startDot !== -1) {
-      preDotState = -1;
-    }
+    if (seg.type === "key" && cur !== seg.name) return false;
   }
-  if (startDot === -1 || end === -1 || // We saw a non-dot character immediately before the dot
-  preDotState === 0 || // The (right-most) trimmed path component is exactly '..'
-  preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
-    return "";
-  }
-  return path.slice(startDot, end);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/extname.ts
-function extname3(path) {
-  return isWindows ? extname2(path) : extname(path);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/normalize.ts
-function assertArg4(path) {
-  assertPath(path);
-  if (path.length === 0) return ".";
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/_common/normalize_string.ts
-function normalizeString(path, allowAboveRoot, separator, isPathSeparator2) {
-  let res = "";
-  let lastSegmentLength = 0;
-  let lastSlash = -1;
-  let dots = 0;
-  let code;
-  for (let i = 0; i <= path.length; ++i) {
-    if (i < path.length) code = path.charCodeAt(i);
-    else if (isPathSeparator2(code)) break;
-    else code = CHAR_FORWARD_SLASH;
-    if (isPathSeparator2(code)) {
-      if (lastSlash === i - 1 || dots === 1) {
-      } else if (lastSlash !== i - 1 && dots === 2) {
-        if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== CHAR_DOT || res.charCodeAt(res.length - 2) !== CHAR_DOT) {
-          if (res.length > 2) {
-            const lastSlashIndex = res.lastIndexOf(separator);
-            if (lastSlashIndex === -1) {
-              res = "";
-              lastSegmentLength = 0;
-            } else {
-              res = res.slice(0, lastSlashIndex);
-              lastSegmentLength = res.length - 1 - res.lastIndexOf(separator);
-            }
-            lastSlash = i;
-            dots = 0;
-            continue;
-          } else if (res.length === 2 || res.length === 1) {
-            res = "";
-            lastSegmentLength = 0;
-            lastSlash = i;
-            dots = 0;
-            continue;
-          }
-        }
-        if (allowAboveRoot) {
-          if (res.length > 0) res += `${separator}..`;
-          else res = "..";
-          lastSegmentLength = 2;
-        }
-      } else {
-        if (res.length > 0) res += separator + path.slice(lastSlash + 1, i);
-        else res = path.slice(lastSlash + 1, i);
-        lastSegmentLength = i - lastSlash - 1;
-      }
-      lastSlash = i;
-      dots = 0;
-    } else if (code === CHAR_DOT && dots !== -1) {
-      ++dots;
-    } else {
-      dots = -1;
-    }
-  }
-  return res;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/posix/normalize.ts
-function normalize(path) {
-  if (path instanceof URL) {
-    path = fromFileUrl(path);
-  }
-  assertArg4(path);
-  const isAbsolute3 = isPosixPathSeparator(path.charCodeAt(0));
-  const trailingSeparator = isPosixPathSeparator(path.charCodeAt(path.length - 1));
-  path = normalizeString(path, !isAbsolute3, "/", isPosixPathSeparator);
-  if (path.length === 0 && !isAbsolute3) path = ".";
-  if (path.length > 0 && trailingSeparator) path += "/";
-  if (isAbsolute3) return `/${path}`;
-  return path;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/posix/join.ts
-function join(path, ...paths) {
-  if (path === void 0) return ".";
-  if (path instanceof URL) {
-    path = fromFileUrl(path);
-  }
-  paths = path ? [
-    path,
-    ...paths
-  ] : paths;
-  paths.forEach((path2) => assertPath(path2));
-  const joined = paths.filter((path2) => path2.length > 0).join("/");
-  return joined === "" ? "." : normalize(joined);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/windows/normalize.ts
-function normalize2(path) {
-  if (path instanceof URL) {
-    path = fromFileUrl2(path);
-  }
-  assertArg4(path);
-  const len = path.length;
-  let rootEnd = 0;
-  let device;
-  let isAbsolute3 = false;
-  const code = path.charCodeAt(0);
-  if (len > 1) {
-    if (isPathSeparator(code)) {
-      isAbsolute3 = true;
-      if (isPathSeparator(path.charCodeAt(1))) {
-        let j = 2;
-        let last = j;
-        for (; j < len; ++j) {
-          if (isPathSeparator(path.charCodeAt(j))) break;
-        }
-        if (j < len && j !== last) {
-          const firstPart = path.slice(last, j);
-          last = j;
-          for (; j < len; ++j) {
-            if (!isPathSeparator(path.charCodeAt(j))) break;
-          }
-          if (j < len && j !== last) {
-            last = j;
-            for (; j < len; ++j) {
-              if (isPathSeparator(path.charCodeAt(j))) break;
-            }
-            if (j === len) {
-              return `\\\\${firstPart}\\${path.slice(last)}\\`;
-            } else if (j !== last) {
-              device = `\\\\${firstPart}\\${path.slice(last, j)}`;
-              rootEnd = j;
-            }
-          }
-        }
-      } else {
-        rootEnd = 1;
-      }
-    } else if (isWindowsDeviceRoot(code)) {
-      if (path.charCodeAt(1) === CHAR_COLON) {
-        device = path.slice(0, 2);
-        rootEnd = 2;
-        if (len > 2) {
-          if (isPathSeparator(path.charCodeAt(2))) {
-            isAbsolute3 = true;
-            rootEnd = 3;
-          }
-        }
-      }
-    }
-  } else if (isPathSeparator(code)) {
-    return "\\";
-  }
-  let tail;
-  if (rootEnd < len) {
-    tail = normalizeString(path.slice(rootEnd), !isAbsolute3, "\\", isPathSeparator);
-  } else {
-    tail = "";
-  }
-  if (tail.length === 0 && !isAbsolute3) tail = ".";
-  if (tail.length > 0 && isPathSeparator(path.charCodeAt(len - 1))) {
-    tail += "\\";
-  }
-  if (device === void 0) {
-    if (isAbsolute3) {
-      if (tail.length > 0) return `\\${tail}`;
-      else return "\\";
-    }
-    return tail;
-  } else if (isAbsolute3) {
-    if (tail.length > 0) return `${device}\\${tail}`;
-    else return `${device}\\`;
-  }
-  return device + tail;
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/windows/join.ts
-function join2(path, ...paths) {
-  if (path instanceof URL) {
-    path = fromFileUrl2(path);
-  }
-  paths = path ? [
-    path,
-    ...paths
-  ] : paths;
-  paths.forEach((path2) => assertPath(path2));
-  paths = paths.filter((path2) => path2.length > 0);
-  if (paths.length === 0) return ".";
-  let needsReplace = true;
-  let slashCount = 0;
-  const firstPart = paths[0];
-  if (isPathSeparator(firstPart.charCodeAt(0))) {
-    ++slashCount;
-    const firstLen = firstPart.length;
-    if (firstLen > 1) {
-      if (isPathSeparator(firstPart.charCodeAt(1))) {
-        ++slashCount;
-        if (firstLen > 2) {
-          if (isPathSeparator(firstPart.charCodeAt(2))) ++slashCount;
-          else {
-            needsReplace = false;
-          }
-        }
-      }
-    }
-  }
-  let joined = paths.join("\\");
-  if (needsReplace) {
-    for (; slashCount < joined.length; ++slashCount) {
-      if (!isPathSeparator(joined.charCodeAt(slashCount))) break;
-    }
-    if (slashCount >= 2) joined = `\\${joined.slice(slashCount)}`;
-  }
-  return normalize2(joined);
-}
-
-// deno:https://jsr.io/@std/path/1.1.4/join.ts
-function join3(path, ...paths) {
-  return isWindows ? join2(path, ...paths) : join(path, ...paths);
-}
-
-// redocly/plugins/preprocessors/bundle-examples.ts
-var yaml = __toESM(require_dist());
-var isContainer = (value) => typeof value === "object" && value !== null;
-var getYaml = (p) => {
-  const result = yaml.parse(Deno.readTextFileSync(p));
-  return typeof result === "object" && result !== null && !Array.isArray(result) ? result : {};
+  return true;
 };
-var bundle = (target, baseDir) => {
-  if (Array.isArray(target)) {
-    return target.map((value) => isContainer(value) ? bundle(value, baseDir) : value);
-  }
-  const result = {};
-  for (const [key, value] of Object.entries(target)) {
-    if (key === "$ref" && typeof value === "string" && extname3(value) === ".yaml") {
-      const targetPath = join3(baseDir, value);
-      Object.assign(result, bundle(getYaml(targetPath), dirname3(targetPath)));
-    } else {
-      result[key] = isContainer(value) ? bundle(value, baseDir) : value;
-    }
-  }
-  return result;
-};
-var bundleEntry = (target, baseDir) => {
-  if (Array.isArray(target)) {
-    return target.map((value) => isContainer(value) ? bundleEntry(value, baseDir) : value);
-  }
-  return Object.fromEntries(Object.entries(target).map(([key, value]) => {
-    if (isContainer(value)) {
-      return [
-        key,
-        key === "examples" ? bundle(value, baseDir) : bundleEntry(value, baseDir)
+var walk = (node, currentPath, matchers, lineCounter, collected, source) => {
+  if (!node) return;
+  if ((0, import_yaml.isMap)(node)) {
+    for (const pair of node.items) {
+      const keyNode = pair.key;
+      const keyName = keyNode && keyNode.value !== void 0 ? String(keyNode.value) : keyNode && typeof keyNode.toString === "function" ? keyNode.toString() : "";
+      const valueNode = pair.value;
+      const newPath = [
+        ...currentPath,
+        keyName
       ];
+      for (const m of matchers) {
+        if (matchesAt(m, newPath)) {
+          if ((0, import_yaml.isScalar)(valueNode) && typeof valueNode.value === "string" && valueNode.range) {
+            let collectedValue = null;
+            let collectedRange = null;
+            const sourceSlice = source.slice(valueNode.range[0], valueNode.range[1]);
+            if (sourceSlice === valueNode.value) {
+              collectedValue = valueNode.value;
+              collectedRange = [
+                valueNode.range[0],
+                valueNode.range[1]
+              ];
+            } else {
+              const srcToken = valueNode.srcToken;
+              if (srcToken && srcToken.type === "block-scalar" && Array.isArray(srcToken.props) && srcToken.props.length > 0 && typeof srcToken.source === "string") {
+                const lastProp = srcToken.props[srcToken.props.length - 1];
+                const bodyStart = lastProp.offset + lastProp.source.length;
+                let body = srcToken.source;
+                while (body.endsWith("\n")) body = body.slice(0, -1);
+                if (body.length > 0) {
+                  collectedValue = body;
+                  collectedRange = [
+                    bodyStart,
+                    bodyStart + body.length
+                  ];
+                }
+              }
+            }
+            if (collectedValue !== null && collectedRange !== null) {
+              const start = lineCounter.linePos(collectedRange[0]);
+              const end = lineCounter.linePos(collectedRange[1]);
+              collected.push({
+                value: collectedValue,
+                range: collectedRange,
+                loc: {
+                  start: {
+                    line: start.line,
+                    column: start.col
+                  },
+                  end: {
+                    line: end.line,
+                    column: end.col
+                  }
+                }
+              });
+            }
+          }
+        }
+      }
+      if (valueNode) {
+        walk(valueNode, newPath, matchers, lineCounter, collected, source);
+      }
     }
-    return [
-      key,
-      value
+  } else if ((0, import_yaml.isSeq)(node)) {
+    for (const item of node.items) {
+      walk(item, [
+        ...currentPath,
+        "[]"
+      ], matchers, lineCounter, collected, source);
+    }
+  }
+};
+var YamlKeysProcessor = class {
+  keys;
+  constructor(options = {}) {
+    this.keys = options.keys && options.keys.length > 0 ? options.keys : [
+      "description"
     ];
-  }));
-};
-var BundleExamples = () => ({
-  Operation: {
-    leave(target, ctx) {
-      const basedir = dirname3(ctx.location.source.absoluteRef);
-      if (target.requestBody && isContainer(target.requestBody)) {
-        target.requestBody = bundleEntry(target.requestBody, basedir);
-      }
-      if (target.responses && isContainer(target.responses)) {
-        target.responses = bundleEntry(target.responses, basedir);
-      }
-    }
   }
-});
-
-// redocly/plugins/index.ts
-var preprocessors = {
-  "bundle-examples": BundleExamples
-};
-var plugin = () => ({
-  id: "my",
-  preprocessors: {
-    oas3: preprocessors
+  availableExtensions() {
+    return [
+      ".yaml",
+      ".yml"
+    ];
   }
-});
-var plugins_default = plugin;
+  processor(_ext) {
+    const matchers = this.keys.map(parseKeyPath);
+    return {
+      preProcess: (text, _filePath) => {
+        const lineCounter = new import_yaml.LineCounter();
+        const doc = (0, import_yaml.parseDocument)(text, {
+          lineCounter,
+          keepSourceTokens: true
+        });
+        const collected = [];
+        if (doc.contents) {
+          walk(doc.contents, [], matchers, lineCounter, collected, text);
+        }
+        const lastPos = lineCounter.linePos(text.length);
+        return {
+          type: "Document",
+          children: collected.map((item) => ({
+            type: "Paragraph",
+            children: [
+              {
+                type: "Str",
+                value: item.value,
+                raw: item.value,
+                range: item.range,
+                loc: item.loc
+              }
+            ],
+            raw: item.value,
+            range: item.range,
+            loc: item.loc
+          })),
+          raw: text,
+          range: [
+            0,
+            text.length
+          ],
+          loc: {
+            start: {
+              line: 1,
+              column: 1
+            },
+            end: {
+              line: lastPos.line,
+              column: lastPos.col
+            }
+          }
+        };
+      },
+      postProcess: (messages, filePath) => ({
+        messages,
+        filePath: filePath ?? "<yaml>"
+      })
+    };
+  }
+};
+var yaml_keys_default = {
+  Processor: YamlKeysProcessor
+};
 export {
-  plugins_default as default,
-  preprocessors
+  yaml_keys_default as default
 };

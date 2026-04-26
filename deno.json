@@ -5,23 +5,26 @@
   },
   "exclude": [
     "dist/",
-    "redocly/plugins/index.js"
+    "redocly/plugins/index.js",
+    "textlint/plugins/yaml-keys/index.js"
   ],
   "imports": {
     "@proofdict/textlint-rule-proofdict": "npm:@proofdict/textlint-rule-proofdict@3.1.2",
     "@redocly/cli": "npm:@redocly/cli@2.30.0",
     "@redocly/openapi-core": "npm:@redocly/openapi-core@2.30.0",
     "@std/path": "jsr:@std/path@1.1.4",
-    "@std/yaml": "jsr:@std/yaml@1.1.0",
     "@stoplight/elements": "npm:@stoplight/elements@9.0.19",
     "@stoplight/prism-cli": "npm:@stoplight/prism-cli@5.15.10",
     "@textlint-ja/textlint-rule-preset-ai-writing": "npm:@textlint-ja/textlint-rule-preset-ai-writing@1.6.3",
+    "@textlint/kernel": "npm:@textlint/kernel@15.6.0",
+    "@textlint/module-interop": "npm:@textlint/module-interop@15.6.0",
     "http-server": "npm:http-server@14.1.1",
     "openapi-types": "npm:openapi-types@12.1.3",
     "textlint": "npm:textlint@15.6.0",
     "textlint-rule-preset-ja-spacing": "npm:textlint-rule-preset-ja-spacing@2.4.3",
     "textlint-rule-preset-ja-technical-writing": "npm:textlint-rule-preset-ja-technical-writing@12.0.2",
-    "textlint-rule-preset-jtf-style": "npm:textlint-rule-preset-jtf-style@3.0.3"
+    "textlint-rule-preset-jtf-style": "npm:textlint-rule-preset-jtf-style@3.0.3",
+    "yaml": "npm:yaml@2.8.3"
   },
   "tasks": {
     "textlint": {
@@ -49,8 +52,9 @@
     "fix": "deno task sort && deno task fix:deno && deno task fix:textlint; deno task lint",
     "fix:deno": "deno lint --fix && deno fmt",
     "fix:textlint": "deno task textlint . --fix --ignore-path ./.gitignore",
-    "build": "deno task clean && deno task build:redocly-plugin && deno task build:api",
+    "build": "deno task clean && deno task build:redocly-plugin && deno task build:textlint-plugin && deno task build:api",
     "build:redocly-plugin": "deno bundle ./redocly/plugins/index.ts -o ./redocly/plugins/index.js",
+    "build:textlint-plugin": "deno bundle ./textlint/plugins/yaml-keys/index.ts -o ./textlint/plugins/yaml-keys/index.js",
     "build:api": "deno task bundle && deno run --allow-read --allow-write --allow-env ./bin/build-api-docs.ts ./dist",
     "clean": "rm -rf ./dist",
     "bundle": "deno task redocly bundle ./api.yaml --config ./redocly.yaml --ext yaml --output ./dist/api.yaml",

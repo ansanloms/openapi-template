@@ -1,6 +1,6 @@
 import type { Oas3Preprocessor } from "@redocly/openapi-core";
 import * as path from "@std/path";
-import * as yaml from "@std/yaml";
+import * as yaml from "yaml";
 
 type YamlContainer = Record<string, unknown> | unknown[];
 

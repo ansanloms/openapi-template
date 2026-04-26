@@ -6,8 +6,8 @@ properties:
   email:
     type: string
     format: email
-    description: メールアドレス
+    description: メールアドレス。
     x-faker: internet.exampleEmail
   status:
     $ref: "./EnumStatus.yaml"
-    description: ユーザ種別
+    description: ユーザ種別。

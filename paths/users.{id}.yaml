@@ -1,6 +1,6 @@
 get:
   operationId: getUsersId
-  summary: ユーザの取得
+  summary: ユーザの取得。
   tags:
     - users
   description:
@@ -9,13 +9,13 @@ get:
     - in: path
       name: id
       required: true
-      description: ユーザ ID
+      description: ユーザ ID。
       schema:
         type: integer
         format: int64
   responses:
     200:
-      description: 処理成功時
+      description: 処理成功時。
       content:
         application/json:
           schema:
@@ -25,7 +25,7 @@ get:
               value:
                 $ref: ../examples/ResponseGetUsers.yaml
     500:
-      description: 処理失敗時
+      description: 処理失敗時。
       content:
         application/problem+json:
           schema:
@@ -36,7 +36,7 @@ get:
                 $ref: ../examples/ResponseError.yaml
 put:
   operationId: putUsersId
-  summary: ユーザ更新
+  summary: ユーザ更新。
   tags:
     - users
   description:
@@ -45,12 +45,12 @@ put:
     - in: path
       name: id
       required: true
-      description: ユーザ ID
+      description: ユーザ ID。
       schema:
         type: integer
         format: int64
   requestBody:
-    description: 会員情報
+    description: 会員情報。
     content:
       application/json:
         schema:
@@ -61,7 +61,7 @@ put:
               $ref: ../examples/RequestPutUsersId.yaml
   responses:
     200:
-      description: 処理成功時
+      description: 処理成功時。
       content:
         application/json:
           schema:
@@ -71,7 +71,7 @@ put:
               value:
                 $ref: ../examples/ResponseEmpty.yaml
     500:
-      description: 処理失敗時
+      description: 処理失敗時。
       content:
         application/problem+json:
           schema:

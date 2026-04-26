@@ -5,5 +5,5 @@ properties:
   email:
     type: string
     format: email
-    description: メールアドレス
+    description: メールアドレス。
     x-faker: internet.exampleEmail
