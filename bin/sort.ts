@@ -20,9 +20,15 @@ const sortKeys = <T>(
 
 const schemasComparator = (a: string, b: string): number => {
   const weight = (name: string): string => {
-    if (name.startsWith("Enum")) return `1${name}`;
-    if (name.startsWith("Request")) return `2${name}`;
-    if (name.startsWith("Response")) return `3${name}`;
+    if (name.startsWith("Enum")) {
+      return `1${name}`;
+    }
+    if (name.startsWith("Request")) {
+      return `2${name}`;
+    }
+    if (name.startsWith("Response")) {
+      return `3${name}`;
+    }
     return `0${name}`;
   };
   return weight(a).localeCompare(weight(b));
