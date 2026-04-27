@@ -58,25 +58,37 @@ const matchesAt = (
   currentPath: string[],
 ): boolean => {
   if (matcher.recursive) {
-    if (matcher.segments.length !== 1) return false;
+    if (matcher.segments.length !== 1) {
+      return false;
+    }
     const seg = matcher.segments[0];
-    if (seg.type !== "key") return false;
+    if (seg.type !== "key") {
+      return false;
+    }
     return currentPath.length > 0 &&
       currentPath[currentPath.length - 1] === seg.name;
   }
-  if (currentPath.length !== matcher.segments.length) return false;
+  if (currentPath.length !== matcher.segments.length) {
+    return false;
+  }
   for (let i = 0; i < matcher.segments.length; i++) {
     const seg = matcher.segments[i];
     const cur = currentPath[i];
     if (seg.type === "anyKey") {
-      if (cur === "[]") return false;
+      if (cur === "[]") {
+        return false;
+      }
       continue;
     }
     if (seg.type === "arrayItem") {
-      if (cur !== "[]") return false;
+      if (cur !== "[]") {
+        return false;
+      }
       continue;
     }
-    if (seg.type === "key" && cur !== seg.name) return false;
+    if (seg.type === "key" && cur !== seg.name) {
+      return false;
+    }
   }
   return true;
 };
@@ -89,7 +101,9 @@ const walk = (
   collected: CollectedItem[],
   source: string,
 ): void => {
-  if (!node) return;
+  if (!node) {
+    return;
+  }
   if (isMap(node)) {
     for (const pair of node.items as Pair[]) {
       const keyNode = pair.key as { value?: unknown; toString?: () => string };
@@ -138,7 +152,9 @@ const walk = (
                 const lastProp = srcToken.props[srcToken.props.length - 1];
                 const bodyStart = lastProp.offset + lastProp.source.length;
                 let body = srcToken.source;
-                while (body.endsWith("\n")) body = body.slice(0, -1);
+                while (body.endsWith("\n")) {
+                  body = body.slice(0, -1);
+                }
                 if (body.length > 0) {
                   collectedValue = body;
                   collectedRange = [bodyStart, bodyStart + body.length];
