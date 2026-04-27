@@ -24,7 +24,7 @@
     "@textlint/kernel": "npm:@textlint/kernel@15.6.0",
     "@textlint/module-interop": "npm:@textlint/module-interop@15.6.0",
     "cli-table3": "npm:cli-table3@0.6.5",
-    "gunshi": "npm:gunshi@0.29.4",
+    "@gunshi/gunshi": "jsr:@gunshi/gunshi@0.29.4",
     "http-server": "npm:http-server@14.1.1",
     "openapi-types": "npm:openapi-types@12.1.3",
     "picocolors": "npm:picocolors@1.1.1",

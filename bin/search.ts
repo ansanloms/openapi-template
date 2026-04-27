@@ -1,7 +1,7 @@
 import * as fs from "@std/fs";
 import * as path from "@std/path";
 import * as yaml from "yaml";
-import { cli, define } from "gunshi";
+import { cli, define } from "@gunshi/gunshi";
 import pc from "picocolors";
 
 const __dirname = path.dirname(path.fromFileUrl(import.meta.url));

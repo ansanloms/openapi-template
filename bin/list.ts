@@ -1,4 +1,4 @@
-import { cli, define } from "gunshi";
+import { cli, define } from "@gunshi/gunshi";
 import Table from "cli-table3";
 import * as fs from "@std/fs";
 import * as path from "@std/path";
