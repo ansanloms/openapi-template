@@ -47,6 +47,11 @@ module.exports = {
         strict: true,
       },
 
+      // 感嘆符と疑問符の設定。
+      "no-exclamation-question-mark": {
+        allow: [],
+      },
+
       // 弱い表現を許可するかどうか。
       "ja-no-weak-phrase": false,
 
@@ -62,9 +67,21 @@ module.exports = {
 
     // https://github.com/textlint-ja/textlint-rule-preset-ja-spacing
     "preset-ja-spacing": {
-      // 全角半角間にスペースを空ける。
+      // 全角半角間にスペースを設ける。
       "ja-space-between-half-and-full-width": {
         space: "always",
+      },
+
+      // インラインコードの前後にスペースを設ける。
+      "ja-space-around-code": {
+        "before": true,
+        "after": true,
+      },
+
+      // リンクの前後にスペースを設ける。
+      "ja-space-around-link": {
+        "before": true,
+        "after": true,
       },
     },
 

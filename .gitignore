@@ -1,1 +1,3 @@
 dist/**
+redocly/plugins/index.js
+textlint/plugins/yaml-keys/index.js
