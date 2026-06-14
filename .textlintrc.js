@@ -1,14 +1,14 @@
 const path = require("node:path");
 
-// textlint plugin yaml-keys の vendored bundle を絶対パスで参照する。
-// 実体は別 repo ansanloms/textlint-plugin-yaml-keys@0.0.2 の配信物 (yaml 同梱) で、
-// `deno task vendor:textlint-plugin` により jsDelivr から再取得する。
+// textlint plugin yaml-keys のローカルラッパー (textlint/plugins/yaml-keys.ts) を
+// 絶対パスで参照する。ラッパーは別 repo ansanloms/textlint-plugin-yaml-keys の
+// ソースを import map (deno.json) 経由で jsDelivr から読み込む薄い再 export。
 // pluginId が npm package 名でないため "textlint-plugin-<id>" の解決には失敗するが、
 // その後段で textlint module-resolver が require.resolve(<id>) を試すため、
 // 絶対パスを渡せばローカル plugin として読み込まれる。
 const yamlKeysPlugin = path.join(
   __dirname,
-  "textlint/plugins/yaml-keys/index.js",
+  "textlint/plugins/yaml-keys.ts",
 );
 
 module.exports = {
