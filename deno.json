@@ -59,15 +59,14 @@
     "fix": "deno task sort && deno task fix:*; deno task lint",
     "fix:deno": "deno lint --fix && deno fmt",
     "fix:textlint": "deno task textlint . --fix --ignore-path ./.gitignore",
-    "build": "deno task clean && deno task build:*",
-    "build:api-docs": "deno task bundle && deno run --allow-read --allow-write --allow-env ./bin/build-api-docs.ts ./dist",
+    "build": "deno task bundle && deno run --allow-read --allow-write --allow-env ./bin/build.ts ./dist",
     "bundle": "deno task redocly bundle ./api.yaml --config ./redocly.yaml --ext yaml --output ./dist/api.yaml",
     "clean": "rm -rf ./dist",
     "sort": "deno run --allow-read --allow-write --allow-env ./bin/sort.ts",
     "list": "deno run --allow-read --allow-env ./bin/list.ts",
     "search": "deno run --allow-read --allow-env ./bin/search.ts",
     "proxy": "deno task prism proxy ./api.yaml https://example.com --cors false --port 30010",
-    "mockup": "deno task prism mock ./api.yaml --cors false --port 30010 ",
+    "mockup": "deno task prism mock ./api.yaml --cors false --port 30010",
     "start": "deno task server ./dist -p 4000 -a 0.0.0.0 -c-1",
     "dev": "deno task server ./ -p 4000 -a 0.0.0.0 -c-1"
   }
