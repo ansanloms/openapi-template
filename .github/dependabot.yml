@@ -9,10 +9,8 @@ updates:
     groups:
       textlint:
         patterns:
-          - "textlint*"
+          - "textlint"
           - "@textlint/*"
-          - "@textlint-ja/*"
-          - "@proofdict/*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
