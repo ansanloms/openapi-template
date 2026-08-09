@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "deno"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "build"
+    groups:
+      textlint:
+        patterns:
+          - "textlint*"
+          - "@textlint/*"
+          - "@textlint-ja/*"
+          - "@proofdict/*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
