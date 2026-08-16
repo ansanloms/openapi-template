@@ -12,7 +12,7 @@
     "npm:@gunshi/plugin-i18n@0.37.1": "0.37.1_@gunshi+plugin-global@0.37.1",
     "npm:@gunshi/plugin-renderer@0.37.1": "0.37.1_@gunshi+plugin-i18n@0.37.1__@gunshi+plugin-global@0.37.1_@gunshi+plugin-global@0.37.1",
     "npm:@proofdict/textlint-rule-proofdict@3.1.2": "3.1.2",
-    "npm:@redocly/cli@2.45.0": "2.45.0",
+    "npm:@redocly/cli@2.46.1": "2.46.1",
     "npm:@stoplight/elements@9.0.24": "9.0.24_react@19.2.8_react-dom@19.2.8__react@19.2.8_@react-spectrum+provider@3.11.1__react@19.2.8__react-dom@19.2.8___react@19.2.8",
     "npm:@textlint-ja/textlint-rule-preset-ai-writing@1.7.0": "1.7.0",
     "npm:@textlint/kernel@15.8.0": "15.8.0",
@@ -531,8 +531,8 @@
         "react"
       ]
     },
-    "@redocly/cli@2.45.0": {
-      "integrity": "sha512-Z9VtjYEYdUBUvB/rggUJv5WPVMMEA3YM9NprEHD5aGrPeUl8aHIv14wByvL+dhxNkUbZW80AMNOuSXwduDeIsQ==",
+    "@redocly/cli@2.46.1": {
+      "integrity": "sha512-FSUSq2FU8VN7DmTobTmq7zb3zPnDkRKSMd3n38D62JFJUUZKnLMQtn7BUhsD2dCFH2WgF05I3fbN7QHDQyCBeA==",
       "bin": true
     },
     "@rehooks/component-size@1.0.3_react@19.2.8": {
@@ -4834,7 +4834,7 @@
       "jsr:@std/fs@1.0.24",
       "jsr:@std/path@1.1.6",
       "npm:@proofdict/textlint-rule-proofdict@3.1.2",
-      "npm:@redocly/cli@2.45.0",
+      "npm:@redocly/cli@2.46.1",
       "npm:@stoplight/elements@9.0.24",
       "npm:@textlint-ja/textlint-rule-preset-ai-writing@1.7.0",
       "npm:@textlint/kernel@15.8.0",
