@@ -2,7 +2,7 @@ const path = require("node:path");
 
 // textlint plugin yaml-keys のローカルラッパー (textlint/plugins/yaml-keys.ts) を
 // 絶対パスで参照する。ラッパーは別 repo ansanloms/textlint-plugin-yaml-keys の
-// ソースを import map (deno.json) 経由で jsDelivr から読み込む薄い再 export。
+// bundle 済み dist/index.js を import map (deno.json) 経由で jsDelivr から読み込む薄い再 export。
 // pluginId が npm package 名でないため "textlint-plugin-<id>" の解決には失敗するが、
 // その後段で textlint module-resolver が require.resolve(<id>) を試すため、
 // 絶対パスを渡せばローカル plugin として読み込まれる。
