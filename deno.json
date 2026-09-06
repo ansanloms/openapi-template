@@ -18,7 +18,7 @@
     "@redocly/cli": "npm:@redocly/cli@2.49.0",
     "@std/fs": "jsr:@std/fs@1.0.24",
     "@std/path": "jsr:@std/path@1.1.6",
-    "@stoplight/elements": "npm:@stoplight/elements@9.0.24",
+    "@stoplight/elements": "npm:@stoplight/elements@9.0.25",
     "@textlint/kernel": "npm:@textlint/kernel@15.8.0",
     "@textlint/module-interop": "npm:@textlint/module-interop@15.8.0",
     "cli-table3": "npm:cli-table3@0.6.5",
