@@ -27,6 +27,7 @@ jobs:
           name: dist
           path: dist/
           overwrite: true
+          include-hidden-files: true
   deploy:
     needs: build
     runs-on: ubuntu-latest
