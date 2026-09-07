@@ -11,6 +11,9 @@
 //     filter・plugin を後から足すときも、同じ形のラッパーディレクトリを textlint/ に置く。
 //   - ラッパーの解決に失敗しても textlint は "No rules found" としか出さない。原因は
 //     `DEBUG='textlint:*' deno task textlint --debug <file>` で確認できる。
+//   - preset-ansanloms と yaml-keys の実体は deno.json の import map で jsDelivr の
+//     タグ付き URL に固定している。Dependabot の deno エコシステムは npm: / jsr: 指定しか
+//     更新しないため、これら 2 件のバージョン更新は deno.json の URL を手で書き換える。
 //
 // 個別 rule の options は preset 側 (ansanloms/textlint-rule-preset-ansanloms の index.ts) が
 // 持ち、ここでは上書きしない。
