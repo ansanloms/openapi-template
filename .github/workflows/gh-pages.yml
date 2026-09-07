@@ -2,6 +2,11 @@ name: Publish on GitHub Pages
 on:
   push:
     branches: [main]
+permissions:
+  contents: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,6 +17,7 @@ jobs:
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+          cache: true
       - name: Build site
         run: deno task build
       - name: Deploy

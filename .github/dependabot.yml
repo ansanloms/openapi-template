@@ -7,13 +7,22 @@ updates:
     commit-message:
       prefix: "build"
     groups:
-      textlint:
+      deno:
         patterns:
-          - "textlint"
-          - "@textlint/*"
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
       prefix: "ci"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
