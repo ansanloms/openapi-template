@@ -45,7 +45,7 @@
     "lint:deno": "deno lint && deno fmt --check",
     "lint:textlint": "deno task textlint . --ignore-path ./.gitignore",
     "lint:redocly": "deno task redocly lint --config ./redocly.yaml",
-    "fix": "deno task sort; deno task fix:deno; deno task fix:textlint; deno task lint",
+    "fix": "deno task sort; deno task fix:textlint; deno task fix:deno; deno task lint",
     "fix:deno": "deno lint --fix; deno fmt",
     "fix:textlint": "deno task textlint . --fix --ignore-path ./.gitignore",
     "build": "deno task build:clean && deno task build:bundle && deno task build:build",

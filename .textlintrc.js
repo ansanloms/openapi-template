@@ -12,8 +12,12 @@
 //   - ラッパーの解決に失敗しても textlint は "No rules found" としか出さない。原因は
 //     `DEBUG='textlint:*' deno task textlint --debug <file>` で確認できる。
 //   - preset-ansanloms と yaml-keys の実体は deno.json の import map で jsDelivr の
-//     タグ付き URL に固定している。Dependabot の deno エコシステムは npm: / jsr: 指定しか
-//     更新しないため、これら 2 件のバージョン更新は deno.json の URL を手で書き換える。
+//     タグ付き URL に固定している。同様に URL 固定の依存として、ディレクトリ指定の
+//     redocly-plugin-inline-examples がある (計 3 件)。Dependabot の deno エコシステムは
+//     npm: / jsr: 指定しか更新しないため、これらのバージョン更新は deno.json の URL を
+//     手で書き換え、`deno install` と `deno task lint` を実行して deno.lock を更新する
+//     (ディレクトリ指定の redocly-plugin-inline-examples は `deno install` では解決されず、
+//     redocly タスクの実行時に deno.lock へ反映される)。
 //
 // 個別 rule の options は preset 側 (ansanloms/textlint-rule-preset-ansanloms の index.ts) が
 // 持ち、ここでは上書きしない。
