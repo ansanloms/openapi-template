@@ -15,9 +15,10 @@
 //     タグ付き URL に固定している。同様に URL 固定の依存として、ディレクトリ指定の
 //     redocly-plugin-inline-examples がある (計 3 件)。Dependabot の deno エコシステムは
 //     npm: / jsr: 指定しか更新しないため、これらのバージョン更新は deno.json の URL を
-//     手で書き換え、`deno install` と `deno task lint` を実行して deno.lock を更新する
-//     (ディレクトリ指定の redocly-plugin-inline-examples は `deno install` では解決されず、
-//     redocly タスクの実行時に deno.lock へ反映される)。
+//     手で書き換え、deno.lock を更新する。textlint の 2 件は `deno install` で反映される。
+//     ディレクトリ指定の redocly-plugin-inline-examples は `deno install` では解決されず、
+//     `deno task lint:redocly` (または `deno task build:bundle`) の実行時に反映される。
+//     `deno task lint` は手前の段が落ちると lint:redocly に到達しないので、直接実行する。
 //
 // 個別 rule の options は preset 側 (ansanloms/textlint-rule-preset-ansanloms の index.ts) が
 // 持ち、ここでは上書きしない。
