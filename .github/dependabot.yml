@@ -1,13 +1,15 @@
 version: 2
 updates:
-  - package-ecosystem: "deno"
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "build"
     groups:
-      deno:
+      npm:
         patterns:
           - "*"
         update-types:
@@ -17,6 +19,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "ci"
     groups:
