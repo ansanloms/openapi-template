@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "types": ["vite/client"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "erasableSyntaxOnly": true,
+    "skipLibCheck": true,
+    "strict": true,
+    // @stoplight/elements 9.0.29 の exports に types 条件が無く、bundler 解決で型を引けないため直接指す
+    "paths": { "@stoplight/elements": ["./node_modules/@stoplight/elements/index.d.ts"] }
+  },
+  "include": ["src"]
+}
