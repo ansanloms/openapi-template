@@ -133,6 +133,8 @@ export default defineConfig({
   root: "src",
   // サブパス配下 (GitHub Pages のプロジェクトサイト) でも assets を解決できるよう、相対パスで参照する。
   base: "./",
+  // hash router で SPA fallback が不要なため。存在しないパスを index.html にせず 404 にする。
+  appType: "mpa",
   // Elements の依存が Node のグローバル (global 等) を前提にしており、無いと実行時に `global is not defined` で落ちるため。
   plugins: [react(), nodePolyfills(), spec()],
   server: { host: true, port: 4000 },
