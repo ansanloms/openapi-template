@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
-    "lint": "npm run lint:check && npm run lint:oxc && npm run lint:textlint && npm run lint:redocly",
+    "lint": "run-s lint:check lint:oxc lint:textlint lint:redocly",
     "lint:check": "npm run check",
     "lint:oxc": "oxlint && oxfmt --check",
     "lint:textlint": "textlint . --ignore-path ./.gitignore",
