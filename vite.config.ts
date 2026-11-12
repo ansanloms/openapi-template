@@ -3,7 +3,6 @@ import * as path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
-import { viteSingleFile } from "vite-plugin-singlefile";
 import { parse } from "yaml";
 
 // <title> を spec の info.title から入れる。build:bundle が先に .cache/api.yaml を作る前提。
@@ -25,8 +24,10 @@ function specTitle(): Plugin {
 export default defineConfig({
   // index.html を src/ に置く。
   root: "src",
+  // サブパス配下 (GitHub Pages のプロジェクトサイト) でも assets を解決できるよう、相対パスで参照する。
+  base: "./",
   // Elements の依存が Node のグローバル (global 等) を前提にしており、無いと実行時に `global is not defined` で落ちるため。
-  plugins: [react(), nodePolyfills(), viteSingleFile(), specTitle()],
+  plugins: [react(), nodePolyfills(), specTitle()],
   server: { host: true, port: 4000 },
   build: {
     // root (src/) の外へ出力する。root の外は既定では空にされないため emptyOutDir を明示する。
@@ -36,7 +37,7 @@ export default defineConfig({
     // LICENSE ファイルを同梱しない依存は、名前・版・識別子の見出しだけになる。
     license: { fileName: "licenses.md" },
     rolldownOptions: {
-      output: { postBanner: "/* Licenses of bundled dependencies: ./licenses.md */" },
+      output: { postBanner: "/* Licenses of bundled dependencies: ../licenses.md */" },
     },
   },
 });
