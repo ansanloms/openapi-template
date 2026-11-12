@@ -10,5 +10,5 @@
     "allowImportingTsExtensions": true,
     "types": ["node"]
   },
-  "include": ["bin/**/*.ts"]
+  "include": ["bin/**/*.ts", "vite.config.ts"]
 }
