@@ -1,5 +1,8 @@
 version: 2
 updates:
+  # 公開直後のバージョンを避ける遅延は .npmrc の min-release-age に任せる。
+  # Dependabot はその値を cooldown の下限として適用するので、ここには cooldown を置かない。
+  # 参照: https://github.com/dependabot/dependabot-core/pull/15132
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -10,13 +13,11 @@ updates:
       npm:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    # .npmrc は github-actions に効かないので、こちらは cooldown を明示する。
     cooldown:
       default-days: 7
     commit-message:
