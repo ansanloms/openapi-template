@@ -9,7 +9,7 @@ OpenAPI Example.
 - `npm run lint`: 型検査、oxlint と oxfmt、textlint、redocly lint を順に実行する。
 - `npm run fix`: sort と textlint、oxlint、oxfmt の各 fixer を順に実行して最後に lint する (途中で失敗しても続行)。
 - `npm run build`: `dist/` に静的サイト (`index.html`、`assets/` 配下の JS・CSS、`api.yaml`、同梱した依存のライセンス一覧 `licenses.md`) を出力する。
-- `npm run dev`: spec を bundle してから Vite の dev サーバを `http://localhost:4000` で起動する。
+- `npm run dev`: spec を bundle せずに Vite の dev サーバを `http://localhost:4000` で起動する。spec のファイルを編集するとブラウザが再読み込みされる。
 - `npm run list`: エンドポイント一覧を出力する (`-- --format json` で JSON)。
 - `npm run search -- --schema <name>`: schema を利用しているエンドポイントを出力する。
 
