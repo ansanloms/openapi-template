@@ -14,16 +14,14 @@
     "fix:oxlint": "oxlint --fix",
     "fix:oxfmt": "oxfmt",
     "fix:textlint": "textlint . --fix --ignore-path ./.gitignore",
-    "build": "run-s build:bundle build:vite build:copy",
-    "build:bundle": "redocly bundle ./api.yaml --config ./redocly.yaml --ext yaml --output ./.cache/api.yaml",
+    "build": "run-s build:vite build:bundle",
     "build:vite": "vite build",
-    "build:copy": "node -e \"fs.cpSync('.cache/api.yaml', 'dist/api.yaml')\"",
+    "build:bundle": "redocly bundle ./api.yaml --config ./redocly.yaml --ext yaml --output ./dist/api.yaml",
     "sort": "node ./bin/sort.ts",
     "list": "node ./bin/list.ts",
     "search": "node ./bin/search.ts",
     "start": "http-server ./dist -p 4000 -a 0.0.0.0 -c-1",
-    "dev": "run-s build:bundle dev:vite",
-    "dev:vite": "vite"
+    "dev": "vite"
   },
   "devDependencies": {
     "@ansanloms/redocly-plugin-inline-examples": "github:ansanloms/redocly-plugin-inline-examples#0.1.0",
