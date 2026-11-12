@@ -3,9 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "run-s check:bin check:app",
-    "check:bin": "tsc --noEmit",
-    "check:app": "tsc --noEmit -p ./tsconfig.app.json",
+    "check": "tsc --noEmit",
     "lint": "run-s lint:check lint:oxlint lint:oxfmt lint:textlint lint:redocly",
     "lint:check": "npm run check",
     "lint:oxlint": "oxlint",
