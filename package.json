@@ -10,6 +10,7 @@
     "lint:oxfmt": "oxfmt --check",
     "lint:textlint": "textlint . --ignore-path ./.gitignore",
     "lint:redocly": "redocly lint --config ./redocly.yaml",
+    "test": "node --test \"bin/*.test.ts\"",
     "fix": "run-s --continue-on-error sort fix:textlint fix:oxlint fix:oxfmt lint",
     "fix:oxlint": "oxlint --fix",
     "fix:oxfmt": "oxfmt",
@@ -18,7 +19,7 @@
     "build:vite": "vite build",
     "build:bundle": "redocly bundle ./api.yaml --config ./redocly.yaml --ext yaml --output ./dist/api.yaml",
     "sort": "node ./bin/sort.ts",
-    "search": "npm run -s build:bundle >&2 && node ./bin/search.ts",
+    "search": "node ./bin/search.ts",
     "start": "vite preview --port 4000",
     "dev": "vite"
   },

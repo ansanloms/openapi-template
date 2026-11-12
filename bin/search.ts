@@ -1,12 +1,17 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
+import { parseArgs } from "node:util";
 import * as yaml from "yaml";
 
 const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"];
 
-const spec = yaml.parse(
-  readFileSync(path.join(import.meta.dirname, "../dist/api.yaml"), "utf8"),
-) as Record<string, any>;
+const { values } = parseArgs({
+  options: {
+    target: { type: "string", default: path.join(import.meta.dirname, "../dist/api.yaml") },
+  },
+});
+
+const spec = yaml.parse(readFileSync(values.target, "utf8")) as Record<string, any>;
 
 const getRefs = (obj: unknown): string[] =>
   Object.entries(obj ?? {}).flatMap(([k, v]) =>
