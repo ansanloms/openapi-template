@@ -20,8 +20,10 @@ components:
       $ref: ./components/schemas/EnumStatus.yaml
     RequestPostUsers:
       $ref: ./components/schemas/RequestPostUsers.yaml
-    RequestPutUserId:
-      $ref: ./components/schemas/RequestPutUserId.yaml
+    RequestPutUsersId:
+      $ref: ./components/schemas/RequestPutUsersId.yaml
+    ResponseEmpty:
+      $ref: ./components/schemas/ResponseEmpty.yaml
     ResponseError:
       $ref: ./components/schemas/ResponseError.yaml
     ResponseGetUsers:
