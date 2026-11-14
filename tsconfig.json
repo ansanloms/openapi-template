@@ -16,5 +16,5 @@
     // @stoplight/elements 9.0.29 の exports に types 条件が無く、bundler 解決で型を引けないため直接指す
     "paths": { "@stoplight/elements": ["./node_modules/@stoplight/elements/index.d.ts"] }
   },
-  "include": ["bin/**/*.ts", "src", "vite.config.ts"]
+  "include": ["bin/**/*.ts", "redocly/**/*.ts", "src", "vite.config.ts"]
 }

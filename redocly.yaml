@@ -6,10 +6,13 @@ apis:
     root: ./api.yaml
 plugins:
   - "@ansanloms/redocly-plugin-inline-examples"
+  - "./redocly/plugins/index.ts"
 rules:
   info-license: off
   no-invalid-media-type-examples: off
   operation-2xx-response: off
   operation-4xx-response: off
+  local/operation-id-naming: error
+  local/description-file-naming: error
 preprocessors:
   ansanloms/inline-examples: on
