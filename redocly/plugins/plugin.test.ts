@@ -47,12 +47,13 @@ test("メソッドは小文字化する", () => {
   assert.equal(expectedOperationId("GET", "/carts"), "getCarts");
 });
 
-test("createPlugin は既定の規約で operation-id-naming・description-file-naming・examples-layout を持つ", () => {
+test("createPlugin は既定の規約で operation-id-naming・description-file-naming・examples-layout・no-unreferenced-files を持つ", () => {
   const plugin = createPlugin({ id: "x" })();
   assert.equal(plugin.id, "x");
   assert.deepEqual(Object.keys(plugin.rules.oas3).sort(), [
     "description-file-naming",
     "examples-layout",
+    "no-unreferenced-files",
     "operation-id-naming",
   ]);
 });
