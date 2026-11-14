@@ -23,7 +23,7 @@ get:
           examples:
             succeeded:
               value:
-                $ref: ../examples/ResponseGetUsers.yaml
+                $ref: ../examples/ResponseGetUsers/default.yaml
     500:
       description: 処理失敗時。
       content:
@@ -33,7 +33,7 @@ get:
           examples:
             processingFailed:
               value:
-                $ref: ../examples/ResponseError.yaml
+                $ref: ../examples/ResponseError/default.yaml
 put:
   operationId: putUsersId
   summary: ユーザ更新。
@@ -58,7 +58,7 @@ put:
         examples:
           normal:
             value:
-              $ref: ../examples/RequestPutUsersId.yaml
+              $ref: ../examples/RequestPutUsersId/default.yaml
   responses:
     200:
       description: 処理成功時。
@@ -69,7 +69,7 @@ put:
           examples:
             succeeded:
               value:
-                $ref: ../examples/ResponseEmpty.yaml
+                $ref: ../examples/ResponseEmpty/default.yaml
     500:
       description: 処理失敗時。
       content:
@@ -79,4 +79,4 @@ put:
           examples:
             processingFailed:
               value:
-                $ref: ../examples/ResponseError.yaml
+                $ref: ../examples/ResponseError/default.yaml

@@ -14,5 +14,6 @@ rules:
   operation-4xx-response: off
   local/operation-id-naming: error
   local/description-file-naming: error
+  local/examples-layout: error
 preprocessors:
   ansanloms/inline-examples: on

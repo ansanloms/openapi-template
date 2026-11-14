@@ -29,7 +29,7 @@ get:
           examples:
             succeeded:
               value:
-                $ref: ../examples/ResponseGetUsers.yaml
+                $ref: ../examples/ResponseGetUsers/default.yaml
     500:
       description: 処理失敗時。
       content:
@@ -39,7 +39,7 @@ get:
           examples:
             processingFailed:
               value:
-                $ref: ../examples/ResponseError.yaml
+                $ref: ../examples/ResponseError/default.yaml
 post:
   operationId: postUsers
   summary: 新規ユーザ登録。
@@ -56,7 +56,7 @@ post:
         examples:
           normal:
             value:
-              $ref: ../examples/RequestPostUsers.yaml
+              $ref: ../examples/RequestPostUsers/default.yaml
   responses:
     200:
       description: 処理成功時。
@@ -67,7 +67,7 @@ post:
           examples:
             succeeded:
               value:
-                $ref: ../examples/ResponseEmpty.yaml
+                $ref: ../examples/ResponseEmpty/default.yaml
     500:
       description: 処理失敗時。
       content:
@@ -77,4 +77,4 @@ post:
           examples:
             processingFailed:
               value:
-                $ref: ../examples/ResponseError.yaml
+                $ref: ../examples/ResponseError/default.yaml
