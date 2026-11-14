@@ -10,7 +10,7 @@
     "lint:oxfmt": "oxfmt --check",
     "lint:textlint": "textlint . --ignore-path ./.gitignore",
     "lint:redocly": "redocly lint --config ./redocly.yaml",
-    "test": "node --test \"bin/*.test.ts\" \"redocly/plugins/rules/*.test.ts\"",
+    "test": "node --test \"bin/*.test.ts\" \"redocly/plugins/*.test.ts\" \"redocly/plugins/rules/*.test.ts\"",
     "fix": "run-s --continue-on-error sort fix:textlint fix:oxlint fix:oxfmt lint",
     "fix:oxlint": "oxlint --fix",
     "fix:oxfmt": "oxfmt",

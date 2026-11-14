@@ -1,55 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  createOperationIdNaming,
-  type ExpectedOperationId,
-  expectedOperationId,
-} from "./operation-id-naming.ts";
+import { createOperationIdNaming, type ExpectedOperationId } from "./operation-id-naming.ts";
 
-test("リテラルセグメントと同名のパラメータも省略しない", () => {
-  assert.equal(expectedOperationId("get", "/products/by/code/{code}"), "getProductsByCodeCode");
-  assert.equal(expectedOperationId("get", "/by/code/{code}"), "getByCodeCode");
-});
-
-test("同名パラメータの有無で期待値が異なる (/code と /code/{code})", () => {
-  assert.equal(expectedOperationId("get", "/code"), "getCode");
-  assert.equal(expectedOperationId("get", "/code/{code}"), "getCodeCode");
-});
-
-test("パラメータは PascalCase に変換して残す", () => {
-  assert.equal(expectedOperationId("get", "/products/{id}"), "getProductsId");
-  assert.equal(
-    expectedOperationId("delete", "/members/me/addresses/{address-id}"),
-    "deleteMembersMeAddressesAddressId",
-  );
-  assert.equal(
-    expectedOperationId("post", "/recommend/content/{measure_account_id}"),
-    "postRecommendContentMeasureAccountId",
-  );
-});
-
-test("英数字以外の文字で単語に分割する", () => {
-  assert.equal(expectedOperationId("post", "/aid/receive"), "postAidReceive");
-  assert.equal(expectedOperationId("get", "/sitemap.xml"), "getSitemapXml");
-  assert.equal(expectedOperationId("get", "/gift-messagecards"), "getGiftMessagecards");
-});
-
-test("末尾スラッシュは無視する", () => {
-  assert.equal(expectedOperationId("get", "/products/"), "getProducts");
-});
-
-test("連続するパラメータも省略しない", () => {
-  assert.equal(expectedOperationId("get", "/a/{a}/{b}"), "getAAB");
-});
-
-test("ルートパスはメソッド名のみになる", () => {
-  assert.equal(expectedOperationId("get", "/"), "get");
-});
-
-test("メソッドは小文字化する", () => {
-  assert.equal(expectedOperationId("GET", "/carts"), "getCarts");
-});
+// 注入する規約の代わりに使う、メソッドとパスを連結するだけの関数。
+const joinMethodAndPath: ExpectedOperationId = (method, path) => method + path;
 
 // Redocly の visitor を模した最小の文脈でルールを駆動し、報告された operationId を返す。
 type Step =
@@ -75,7 +30,7 @@ interface TestVisitor {
   };
 }
 
-const runRule = (steps: Step[], expected: ExpectedOperationId = expectedOperationId): string[] => {
+const runRule = (steps: Step[], expected: ExpectedOperationId = joinMethodAndPath): string[] => {
   const reported: string[] = [];
   const visitor = (
     createOperationIdNaming(expected) as unknown as (options: unknown) => TestVisitor
@@ -104,26 +59,26 @@ test("paths 直下の operation は検査する", () => {
     runRule([
       { kind: "enter", key: "/carts" },
       { kind: "operation", method: "get", operationId: "wrong" },
-      { kind: "operation", method: "post", operationId: "postCarts" },
+      { kind: "operation", method: "post", operationId: "post/carts" },
       { kind: "leave" },
     ]),
     ["wrong"],
   );
 });
 
-test("既定と異なる関数を注入すると、その関数の返す値を期待値として判定する", () => {
+test("関数を注入すると、その関数の返す値を期待値として判定する", () => {
   const fixed: ExpectedOperationId = () => "fixedId";
   assert.deepEqual(
     runRule(
       [
         { kind: "enter", key: "/carts" },
-        { kind: "operation", method: "get", operationId: "getCarts" },
+        { kind: "operation", method: "get", operationId: "get/carts" },
         { kind: "operation", method: "post", operationId: "fixedId" },
         { kind: "leave" },
       ],
       fixed,
     ),
-    ["getCarts"],
+    ["get/carts"],
   );
 });
 
