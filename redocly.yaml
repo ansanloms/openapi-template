@@ -14,5 +14,9 @@ rules:
   operation-4xx-response: off
   local/operation-id-naming: error
   local/description-file-naming: error
+  local/no-unreferenced-files:
+    severity: error
+    # examples は対象にしない。example の value 内の $ref は参照として辿られず、誤検出になるため。
+    dirs: [paths, components]
 preprocessors:
   ansanloms/inline-examples: on
