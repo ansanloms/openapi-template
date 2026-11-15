@@ -240,6 +240,41 @@ test("配列が path、method の順に並び、各 schemas は名前順で重�
   assert.deepEqual(find(result, "POST", "/b").schemas, ["A", "Z"]);
 });
 
+test("出力が、大文字と記号が混ざる path でも code unit 順に並ぶ", () => {
+  const names = ["/a_b", "/aB", "/a-b", "/A", "/a", "/Z", "/b"];
+  const result = runSearch({
+    openapi: "3.1.0",
+    paths: Object.fromEntries(
+      names.map((name, i) => [
+        name,
+        { get: { operationId: `op${i}`, summary: `op${i}`, responses: okResponse(empty()) } },
+      ]),
+    ),
+  });
+  assert.deepEqual(
+    result.map((e) => e.path),
+    ["/A", "/Z", "/a", "/a-b", "/aB", "/a_b", "/b"],
+  );
+});
+
+test("各要素の schemas が、大文字と記号が混ざる名前でも code unit 順に並ぶ", () => {
+  const names = ["a_b", "aB", "a-b", "A", "a", "Z", "b"];
+  const result = runSearch({
+    openapi: "3.1.0",
+    paths: {
+      "/a": {
+        get: {
+          operationId: "a",
+          summary: "a",
+          responses: okResponse({ oneOf: names.map(ref) }),
+        },
+      },
+    },
+    components: { schemas: Object.fromEntries(names.map((name) => [name, empty()])) },
+  });
+  assert.deepEqual(find(result, "GET", "/a").schemas, ["A", "Z", "a", "a-b", "aB", "a_b", "b"]);
+});
+
 test("解決できない $ref と #/ で始まらない $ref があると、標準エラーに出して 0 以外で終わる", () => {
   const { status, stdout, stderr } = runSearchRaw({
     openapi: "3.1.0",

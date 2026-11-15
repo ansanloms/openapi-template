@@ -83,6 +83,75 @@ test("components.securitySchemes のキーが既定順に並ぶ", () => {
   ]);
 });
 
+test("paths に大文字と記号が混ざっても code unit 順に並ぶ", () => {
+  const result = sortOnce({
+    openapi: "3.1.0",
+    paths: { "/a_b": {}, "/aB": {}, "/a-b": {}, "/A": {}, "/a": {}, "/Z": {}, "/b": {} },
+  });
+  assert.deepEqual(Object.keys(result.paths), ["/A", "/Z", "/a", "/a-b", "/aB", "/a_b", "/b"]);
+});
+
+test("components.schemas の群内が、大文字と記号が混ざっても code unit 順に並ぶ", () => {
+  const result = sortOnce({
+    openapi: "3.1.0",
+    components: {
+      schemas: {
+        a_b: empty(),
+        aB: empty(),
+        "a-b": empty(),
+        A: empty(),
+        a: empty(),
+        Z: empty(),
+        b: empty(),
+        Enuma: empty(),
+        Enum_b: empty(),
+        EnumB: empty(),
+        "Enum-b": empty(),
+      },
+    },
+  });
+  assert.deepEqual(Object.keys(result.components.schemas), [
+    "A",
+    "Z",
+    "a",
+    "a-b",
+    "aB",
+    "a_b",
+    "b",
+    "Enum-b",
+    "EnumB",
+    "Enum_b",
+    "Enuma",
+  ]);
+});
+
+test("components.securitySchemes に大文字と記号が混ざっても code unit 順に並ぶ", () => {
+  const scheme = () => ({ type: "http", scheme: "bearer" });
+  const result = sortOnce({
+    openapi: "3.1.0",
+    components: {
+      securitySchemes: {
+        a_b: scheme(),
+        aB: scheme(),
+        "a-b": scheme(),
+        A: scheme(),
+        a: scheme(),
+        Z: scheme(),
+        b: scheme(),
+      },
+    },
+  });
+  assert.deepEqual(Object.keys(result.components.securitySchemes), [
+    "A",
+    "Z",
+    "a",
+    "a-b",
+    "aB",
+    "a_b",
+    "b",
+  ]);
+});
+
 test("2 回続けて実行しても 1 回目の結果から内容が変わらない", () => {
   const [first, second] = runSort(
     {
