@@ -5,17 +5,16 @@ apis:
   example:
     root: ./api.yaml
 plugins:
-  - "@ansanloms/redocly-plugin-inline-examples"
-  - "./redocly/plugins/index.ts"
+  - "@ansanloms/redocly-plugins"
 rules:
   info-license: off
   no-invalid-media-type-examples: off
   operation-2xx-response: off
   operation-4xx-response: off
-  local/operation-id-naming: error
-  local/description-file-naming: error
-  local/examples-layout: error
-  local/no-unreferenced-files:
+  ansanloms/operation-id-naming: error
+  ansanloms/description-file-naming: error
+  ansanloms/examples-layout: error
+  ansanloms/no-unreferenced-files:
     severity: error
     # examples は対象にしない。example の value 内の $ref は参照として辿られず、誤検出になるため。
     dirs: [paths, components]
