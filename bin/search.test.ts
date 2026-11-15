@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
@@ -16,20 +16,32 @@ type Entry = {
   schemas: string[];
 };
 
-// bundle 済みを想定した fixture を一時ファイルに書いて search.ts を実行し、標準出力の JSON を返す。
-const runSearch = (spec: unknown): Entry[] => {
+// fixture を一時ファイルに書き、そのパスを渡して fn を実行する。
+const withTarget = <T>(spec: unknown, fn: (target: string) => T): T => {
   const dir = mkdtempSync(path.join(tmpdir(), "search-test-"));
   try {
     const target = path.join(dir, "api.yaml");
     writeFileSync(target, yaml.stringify(spec));
-    const stdout = execFileSync(process.execPath, [script, "--target", target], {
-      encoding: "utf8",
-    });
-    return JSON.parse(stdout);
+    return fn(target);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 };
+
+// bundle 済みを想定した fixture で search.ts を実行し、標準出力の JSON を返す。
+const runSearch = (spec: unknown): Entry[] =>
+  withTarget(spec, (target) =>
+    JSON.parse(execFileSync(process.execPath, [script, "--target", target], { encoding: "utf8" })),
+  );
+
+// 失敗を期待する fixture で search.ts を実行し、終了コードと標準出力・標準エラーを返す。
+const runSearchRaw = (spec: unknown) =>
+  withTarget(spec, (target) => {
+    const { status, stdout, stderr } = spawnSync(process.execPath, [script, "--target", target], {
+      encoding: "utf8",
+    });
+    return { status, stdout, stderr };
+  });
 
 const empty = () => ({ type: "object" });
 
@@ -228,8 +240,8 @@ test("配列が path、method の順に並び、各 schemas は名前順で重�
   assert.deepEqual(find(result, "POST", "/b").schemas, ["A", "Z"]);
 });
 
-test("解決できない $ref と #/ で始まらない $ref があってもエラーにならない", () => {
-  const result = runSearch({
+test("解決できない $ref と #/ で始まらない $ref があると、標準エラーに出して 0 以外で終わる", () => {
+  const { status, stdout, stderr } = runSearchRaw({
     openapi: "3.1.0",
     paths: {
       "/m": {
@@ -248,6 +260,166 @@ test("解決できない $ref と #/ で始まらない $ref があってもエ�
     },
     components: { schemas: { Present: { type: "object" } } },
   });
-  const schemas = find(result, "GET", "/m").schemas;
-  assert.ok(schemas.includes("Present"));
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("#/components/schemas/Missing"));
+  assert.ok(stderr.includes("./external.yaml#/Foo"));
+});
+
+const getOp = (operationId: string, schema?: unknown) => ({
+  operationId,
+  summary: operationId,
+  responses: schema ? okResponse(schema) : { "200": { description: "ok" } },
+});
+
+const specWith = (paths: unknown, schemas: Record<string, unknown>, extra: object = {}) => ({
+  openapi: "3.1.0",
+  paths,
+  components: { schemas, ...extra },
+});
+
+test("path item が components.pathItems への $ref でも、エンドポイントと参照先の schema が出る", () => {
+  const result = runSearch(
+    specWith(
+      { "/b": { $ref: "#/components/pathItems/B" } },
+      { Bs: empty() },
+      {
+        pathItems: { B: { get: getOp("getB", ref("Bs")) } },
+      },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/b").schemas, ["Bs"]);
+  assert.equal(find(result, "GET", "/b").operationId, "getB");
+});
+
+test("path item の $ref の連鎖 (A から B) を辿る", () => {
+  const result = runSearch(
+    specWith(
+      { "/a": { $ref: "#/components/pathItems/A" } },
+      { S: empty() },
+      {
+        pathItems: {
+          A: { $ref: "#/components/pathItems/B" },
+          B: { get: getOp("getB", ref("S")) },
+        },
+      },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/a").schemas, ["S"]);
+});
+
+test("path item が $ref と並べて operation を持つと、両方の operation が出る", () => {
+  const result = runSearch(
+    specWith(
+      { "/c": { $ref: "#/components/pathItems/C", post: getOp("postC") } },
+      {},
+      {
+        pathItems: { C: { get: getOp("getC") } },
+      },
+    ),
+  );
+  assert.deepEqual(
+    result.map((e) => `${e.method} ${e.path}`),
+    ["GET /c", "POST /c"],
+  );
+});
+
+test("キー a~1b を #/components/schemas/a~1b で参照すると、名前は a~1b で先の schema も入る", () => {
+  const result = runSearch(
+    specWith(
+      { "/t": { get: getOp("t", { $ref: "#/components/schemas/a~1b" }) } },
+      { "a~1b": { type: "object", properties: { leaf: ref("Leaf") } }, Leaf: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/t").schemas, ["Leaf", "a~1b"]);
+});
+
+test("そのままのキーが無ければ ~1 と ~0 を戻して引く", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/s": {
+          get: getOp("s", {
+            allOf: [{ $ref: "#/components/schemas/a~1b" }, { $ref: "#/components/schemas/c~0d" }],
+          }),
+        },
+      },
+      { "a/b": empty(), "c~d": empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/s").schemas, ["a/b", "c~d"]);
+});
+
+test("キー a~1b と a/b が両方あると、#/components/schemas/a~1b は a~1b を指す", () => {
+  const result = runSearch(
+    specWith(
+      { "/t": { get: getOp("t", { $ref: "#/components/schemas/a~1b" }) } },
+      { "a~1b": empty(), "a/b": empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/t").schemas, ["a~1b"]);
+});
+
+test("percent-encode された $ref は解決できず、0 以外で終わる", () => {
+  const { status, stdout, stderr } = runSearchRaw(
+    specWith(
+      { "/p": { get: getOp("p", { $ref: "#/components/schemas/Foo%20Bar" }) } },
+      { "Foo Bar": empty() },
+    ),
+  );
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("#/components/schemas/Foo%20Bar"));
+});
+
+test("percent を含むキーはそのまま引ける (percent-decode しない)", () => {
+  const result = runSearch(
+    specWith(
+      { "/p": { get: getOp("p", { $ref: "#/components/schemas/Lit%20X" }) } },
+      { "Lit%20X": empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/p").schemas, ["Lit%20X"]);
+});
+
+test("path item の $ref が解決できない、または循環すると、0 以外で終わる", () => {
+  const missing = runSearchRaw(
+    specWith({ "/x": { $ref: "#/components/pathItems/Nope" } }, {}, { pathItems: {} }),
+  );
+  assert.notEqual(missing.status, 0);
+  assert.equal(missing.stdout, "");
+  assert.ok(missing.stderr.includes("#/components/pathItems/Nope"));
+
+  const loop = runSearchRaw(
+    specWith(
+      { "/y": { $ref: "#/components/pathItems/L1" } },
+      {},
+      {
+        pathItems: {
+          L1: { $ref: "#/components/pathItems/L2" },
+          L2: { $ref: "#/components/pathItems/L1" },
+        },
+      },
+    ),
+  );
+  assert.notEqual(loop.status, 0);
+  assert.equal(loop.stdout, "");
+  assert.ok(loop.stderr.includes("#/components/pathItems/L1"));
+});
+
+test("path item の $ref が path item として使えない値 (配列、null、文字列) を指すと、標準エラーに出して 0 以外で終わる", () => {
+  const cases: { ref: string; extra: Record<string, unknown> }[] = [
+    { ref: "#/tags", extra: { tags: [{ name: "t" }] } },
+    { ref: "#/x-null", extra: { "x-null": null } },
+    { ref: "#/info/title", extra: { info: { title: "t", version: "1" } } },
+  ];
+  for (const { ref, extra } of cases) {
+    const { status, stdout, stderr } = runSearchRaw({
+      ...specWith({ "/x": { $ref: ref } }, {}),
+      ...extra,
+    });
+    assert.notEqual(status, 0, ref);
+    assert.equal(stdout, "", ref);
+    assert.ok(stderr.includes(ref), ref);
+  }
 });
