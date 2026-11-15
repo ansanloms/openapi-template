@@ -5,6 +5,8 @@ import * as yaml from "yaml";
 
 const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"];
 
+const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+
 const { values } = parseArgs({
   options: {
     target: { type: "string", default: path.join(import.meta.dirname, "../dist/api.yaml") },
@@ -120,7 +122,7 @@ const result = Object.entries<any>(spec.paths ?? {}).flatMap(([endpoint, rawItem
     }));
 });
 
-result.sort((a, b) => a.path.localeCompare(b.path) || a.method.localeCompare(b.method));
+result.sort((a, b) => cmp(a.path, b.path) || cmp(a.method, b.method));
 
 if (unresolved.size === 0) {
   console.info(JSON.stringify(result, null, 2));
