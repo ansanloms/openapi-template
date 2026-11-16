@@ -458,3 +458,241 @@ test("path item の $ref が path item として使えない値 (配列、null�
     assert.ok(stderr.includes(ref), ref);
   }
 });
+
+const missingRef = { $ref: "#/components/schemas/Missing" };
+
+test("media type の examples の value の中の $ref は辿らず、同じ operation の schema は出る", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/f": {
+          get: {
+            operationId: "f",
+            summary: "f",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/pdf": {
+                    schema: ref("Doc"),
+                    examples: {
+                      sample: {
+                        summary: "サンプル",
+                        value: { $ref: "../examples/Foo.pdf", type: "string", format: "binary" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { Doc: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/f").schemas, ["Doc"]);
+});
+
+test("example と examples (配列) の中の解決できない $ref はエラーにならない", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/e": {
+          get: {
+            operationId: "e",
+            summary: "e",
+            parameters: [
+              { name: "q", in: "query", schema: { type: "string" }, example: missingRef },
+            ],
+            responses: okResponse({
+              ...ref("A"),
+            }),
+          },
+        },
+        "/m": {
+          get: {
+            operationId: "m",
+            summary: "m",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: { type: "object", example: missingRef, examples: [missingRef] },
+                    example: missingRef,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { A: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/e").schemas, ["A"]);
+  assert.deepEqual(find(result, "GET", "/m").schemas, []);
+});
+
+test("default、enum、const の中の解決できない $ref はエラーにならない", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/d": {
+          get: getOp("d", {
+            type: "object",
+            default: missingRef,
+            enum: [missingRef],
+            const: missingRef,
+          }),
+        },
+      },
+      {},
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/d").schemas, []);
+});
+
+test("example などの名前を持つプロパティの $ref は参照として拾う", () => {
+  const names = ["example", "examples", "default", "enum", "const", "value"];
+  const result = runSearch(
+    specWith(
+      {
+        "/n": {
+          get: getOp("n", {
+            type: "object",
+            properties: Object.fromEntries(names.map((name) => [name, ref(`P_${name}`)])),
+          }),
+        },
+      },
+      Object.fromEntries(names.map((name) => [`P_${name}`, empty()])),
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/n").schemas, names.map((name) => `P_${name}`).sort());
+});
+
+test("responses.default の schema が出る", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/r": {
+          get: {
+            operationId: "r",
+            summary: "r",
+            responses: {
+              default: {
+                description: "error",
+                content: { "application/json": { schema: ref("Err") } },
+              },
+            },
+          },
+        },
+      },
+      { Err: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/r").schemas, ["Err"]);
+});
+
+test("headers の下の example という名前の header の schema が出る", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/h": {
+          get: {
+            operationId: "h",
+            summary: "h",
+            responses: {
+              "200": { description: "ok", headers: { example: { schema: ref("H") } } },
+            },
+          },
+        },
+      },
+      { H: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/h").schemas, ["H"]);
+});
+
+test("components.examples への $ref は value の中を辿らず、存在しない Example への $ref は 0 以外で終わる", () => {
+  const build = (target: string) =>
+    specWith(
+      {
+        "/x": {
+          get: {
+            operationId: "x",
+            summary: "x",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: ref("X"),
+                    examples: { sample: { $ref: target } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { X: empty() },
+      { examples: { Foo: { summary: "foo", value: { a: missingRef } } } },
+    );
+  const result = runSearch(build("#/components/examples/Foo"));
+  assert.deepEqual(find(result, "GET", "/x").schemas, ["X"]);
+
+  const { status, stdout, stderr } = runSearchRaw(build("#/components/examples/Missing"));
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("#/components/examples/Missing"));
+});
+
+test("examples の map で名前が value や default のエントリでも、その value の中は辿らない", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/v": {
+          get: {
+            operationId: "v",
+            summary: "v",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: ref("V"),
+                    examples: {
+                      value: { value: missingRef },
+                      default: { value: { x: missingRef } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { V: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/v").schemas, ["V"]);
+});
+
+test("名前の map の入れ子: properties という名前のプロパティの中の properties も map として辿る", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/p": {
+          get: getOp("p", {
+            type: "object",
+            properties: { properties: { type: "object", properties: { x: ref("Inner") } } },
+          }),
+        },
+      },
+      { Inner: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/p").schemas, ["Inner"]);
+});
