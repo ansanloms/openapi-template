@@ -15,10 +15,50 @@ const { values } = parseArgs({
 
 const spec = yaml.parse(readFileSync(values.target, "utf8")) as Record<string, any>;
 
+// 値がデータ (schema でも Reference Object でもない) のキー。中の $ref は参照として扱わない。
+const dataKeys = new Set(["example", "default", "enum", "const"]);
+
+// 子のキーが名前 (プロパティ名、ステータスコード等) の map。直下のキーはキーワードとして解釈しない。
+const nameMaps = new Set([
+  "properties",
+  "patternProperties",
+  "$defs",
+  "dependentSchemas",
+  "responses",
+  "headers",
+  "content",
+  "callbacks",
+  "links",
+  "encoding",
+]);
+
+// Example Object の value はデータなので外す。
+const withoutValue = (obj: unknown) => {
+  const { value: _value, ...rest } = obj as Record<string, unknown>;
+  return rest;
+};
+
 const getRefs = (obj: unknown): string[] =>
-  Object.entries(obj ?? {}).flatMap(([k, v]) =>
-    k === "$ref" && typeof v === "string" ? [v] : v && typeof v === "object" ? getRefs(v) : [],
-  );
+  Object.entries(obj ?? {}).flatMap(([k, v]) => {
+    if (k === "$ref" && typeof v === "string") {
+      return [v];
+    }
+    if (!v || typeof v !== "object" || dataKeys.has(k)) {
+      return [];
+    }
+    // examples は配列なら schema の examples (データ)、そうでなければ Example Object の map。
+    if (k === "examples") {
+      return Array.isArray(v)
+        ? []
+        : Object.values(v).flatMap((e) =>
+            e && typeof e === "object" ? getRefs(withoutValue(e)) : [],
+          );
+    }
+    if (nameMaps.has(k) && !Array.isArray(v)) {
+      return Object.values(v).flatMap((child) => getRefs(child));
+    }
+    return getRefs(v);
+  });
 
 // $ref を JSON Pointer のセグメント配列に直す。エスケープの復元は resolve が行う。
 const toSegments = (ref: string) => ref.slice(2).split("/");
@@ -69,7 +109,9 @@ const collect = (obj: unknown) => {
       if (keys[0] === "components" && keys[1] === "schemas" && keys.length >= 3) {
         names.add(keys[2]);
       }
-      walk(target);
+      // redocly は $ref で取り込んだ Example を components.examples へ寄せるので、ここでも value を外す。
+      const isExample = keys.length === 3 && keys[0] === "components" && keys[1] === "examples";
+      walk(isExample && target && typeof target === "object" ? withoutValue(target) : target);
     }
   };
   walk(obj);
