@@ -156,35 +156,55 @@ const resolvePathItem = (item: Record<string, any>): Record<string, any> | undef
   }
 };
 
+// object でない operation の場所 (`<path> <method>`)。method は spec に書かれたキーそのまま。
+const invalidOperations: string[] = [];
+
 const result = Object.entries<any>(spec.paths ?? {}).flatMap(([endpoint, rawItem]) => {
   const item = resolvePathItem(rawItem);
   if (item === undefined) {
     return [];
   }
-  const operations: [string, any][] = [
+  const operations: [string, string, any][] = [
     ...Object.entries<any>(item)
       .filter(([method]) => methods.includes(method))
-      .map(([method, operation]): [string, any] => [method.toUpperCase(), operation]),
+      .map(([method, operation]): [string, string, any] => [
+        method.toUpperCase(),
+        method,
+        operation,
+      ]),
     ...(isPlainObject(item.additionalOperations)
-      ? Object.entries<any>(item.additionalOperations)
+      ? Object.entries<any>(item.additionalOperations).map(
+          ([method, operation]): [string, string, any] => [method, method, operation],
+        )
       : []),
   ];
-  return operations.map(([method, operation]) => ({
-    method,
-    path: endpoint,
-    operationId: operation.operationId,
-    summary: operation.summary,
-    schemas: collect([item.parameters, operation]),
-  }));
+  return operations.flatMap(([method, key, operation]) => {
+    if (!isPlainObject(operation)) {
+      invalidOperations.push(`${endpoint} ${key}`);
+      return [];
+    }
+    return [
+      {
+        method,
+        path: endpoint,
+        operationId: operation.operationId,
+        summary: operation.summary,
+        schemas: collect([item.parameters, operation]),
+      },
+    ];
+  });
 });
 
 result.sort((a, b) => cmp(a.path, b.path) || cmp(a.method, b.method));
 
-if (unresolved.size === 0) {
+if (unresolved.size === 0 && invalidOperations.length === 0) {
   console.info(JSON.stringify(result, null, 2));
 } else {
   for (const ref of unresolved) {
     console.error(`解決できない $ref: ${ref}`);
+  }
+  for (const location of invalidOperations) {
+    console.error(`object でない operation: ${location}`);
   }
   process.exitCode = 1;
 }

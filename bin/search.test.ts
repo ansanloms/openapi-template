@@ -301,6 +301,56 @@ test("解決できない $ref と #/ で始まらない $ref があると、標�
   assert.ok(stderr.includes("./external.yaml#/Foo"));
 });
 
+test("固定メソッドの値が object でないと、path と method を標準エラーに出して 0 以外で終わる", () => {
+  for (const value of [null, "text", ["a"]]) {
+    const { status, stdout, stderr } = runSearchRaw({
+      openapi: "3.2.1",
+      paths: { "/x": { get: value } },
+    });
+    assert.notEqual(status, 0);
+    assert.equal(stdout, "");
+    assert.ok(stderr.includes("object でない operation: /x get"), stderr);
+  }
+});
+
+test("additionalOperations の要素が object でないと、path と method を標準エラーに出して 0 以外で終わる", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: { "/x": { additionalOperations: { Copy: null } } },
+  });
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("object でない operation: /x Copy"), stderr);
+});
+
+test("正しい operation が同じ spec にあっても、object でない operation があると JSON は出力しない", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "/x": { get: null, post: { operationId: "p", summary: "p", responses: okResponse(empty()) } },
+    },
+  });
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("object でない operation: /x get"), stderr);
+});
+
+test("解決できない $ref と object でない operation の両方があると、両方を標準エラーに出す", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "/x": { get: null },
+      "/y": {
+        get: { operationId: "y", summary: "y", responses: okResponse(ref("Missing")) },
+      },
+    },
+  });
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("解決できない $ref: #/components/schemas/Missing"), stderr);
+  assert.ok(stderr.includes("object でない operation: /x get"), stderr);
+});
+
 const getOp = (operationId: string, schema?: unknown) => ({
   operationId,
   summary: operationId,
