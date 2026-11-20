@@ -159,7 +159,17 @@ const resolvePathItem = (item: Record<string, any>): Record<string, any> | undef
 // object でない operation の場所 (`<path> <method>`)。method は spec に書かれたキーそのまま。
 const invalidOperations: string[] = [];
 
+// `/` で始まるキーのうち、値が object でない path item の場所 (`<path>`)。
+// `/` で始まらないキー (`x-` の拡張フィールド等) の object でない値は、控えずに読み飛ばす。
+const invalidPathItems: string[] = [];
+
 const result = Object.entries<any>(spec.paths ?? {}).flatMap(([endpoint, rawItem]) => {
+  if (!isPlainObject(rawItem)) {
+    if (endpoint.startsWith("/")) {
+      invalidPathItems.push(endpoint);
+    }
+    return [];
+  }
   const item = resolvePathItem(rawItem);
   if (item === undefined) {
     return [];
@@ -197,11 +207,14 @@ const result = Object.entries<any>(spec.paths ?? {}).flatMap(([endpoint, rawItem
 
 result.sort((a, b) => cmp(a.path, b.path) || cmp(a.method, b.method));
 
-if (unresolved.size === 0 && invalidOperations.length === 0) {
+if (unresolved.size === 0 && invalidPathItems.length === 0 && invalidOperations.length === 0) {
   console.info(JSON.stringify(result, null, 2));
 } else {
   for (const ref of unresolved) {
     console.error(`解決できない $ref: ${ref}`);
+  }
+  for (const location of invalidPathItems) {
+    console.error(`object でない path item: ${location}`);
   }
   for (const location of invalidOperations) {
     console.error(`object でない operation: ${location}`);
