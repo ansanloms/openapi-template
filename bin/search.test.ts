@@ -59,7 +59,7 @@ const find = (entries: Entry[], method: string, endpoint: string) => {
 
 test("各要素が method (大文字)、path、operationId、summary、schemas を持つ", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/users": {
         get: { operationId: "listUsers", summary: "一覧", responses: okResponse(ref("User")) },
@@ -80,7 +80,7 @@ test("各要素が method (大文字)、path、operationId、summary、schemas �
 
 test("直接参照と 3 段以上の推移参照の schema がすべて schemas に入る", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/a": { get: { operationId: "a", summary: "a", responses: okResponse(ref("A")) } },
     },
@@ -99,7 +99,7 @@ test("直接参照と 3 段以上の推移参照の schema がすべて schemas 
 
 test("循環参照と自己参照があっても停止し、関係する schema が 1 回ずつ入る", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/a": { get: { operationId: "a", summary: "a", responses: okResponse(ref("A")) } },
       "/s": { get: { operationId: "s", summary: "s", responses: okResponse(ref("Self")) } },
@@ -118,7 +118,7 @@ test("循環参照と自己参照があっても停止し、関係する schema 
 
 test("path item 直下の parameters が参照する schema は、その path の全 operation に入り他の path には入らない", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/items/{id}": {
         parameters: [{ name: "id", in: "path", required: true, schema: ref("ItemId") }],
@@ -144,7 +144,7 @@ test("path item 直下の parameters が参照する schema は、その path �
 
 test("schema 内部を指す参照では所有 schema が schemas に入る", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/u": {
         get: {
@@ -165,7 +165,7 @@ test("schema 内部を指す参照では所有 schema が schemas に入る", ()
 
 test("parameters や responses を経由した先の schema が入り、経由した名前は入らない", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/v": {
         get: {
@@ -195,7 +195,7 @@ test("parameters や responses を経由した先の schema が入り、経由�
 
 test("path item の HTTP メソッド以外のキーは operation として出力されない", () => {
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/p": {
         summary: "path の概要",
@@ -218,7 +218,7 @@ test("配列が path、method の順に並び、各 schemas は名前順で重�
     responses: okResponse({ oneOf: schemas.map(ref) }),
   });
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/b": { post: op("bPost", ["Z", "A"]), get: op("bGet", ["A"]) },
       "/a": { put: op("aPut", ["M", "B", "M/properties/x", "A"]), delete: op("aDelete", ["A"]) },
@@ -243,7 +243,7 @@ test("配列が path、method の順に並び、各 schemas は名前順で重�
 test("出力が、大文字と記号が混ざる path でも code unit 順に並ぶ", () => {
   const names = ["/a_b", "/aB", "/a-b", "/A", "/a", "/Z", "/b"];
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: Object.fromEntries(
       names.map((name, i) => [
         name,
@@ -260,7 +260,7 @@ test("出力が、大文字と記号が混ざる path でも code unit 順に並
 test("各要素の schemas が、大文字と記号が混ざる名前でも code unit 順に並ぶ", () => {
   const names = ["a_b", "aB", "a-b", "A", "a", "Z", "b"];
   const result = runSearch({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/a": {
         get: {
@@ -277,7 +277,7 @@ test("各要素の schemas が、大文字と記号が混ざる名前でも code
 
 test("解決できない $ref と #/ で始まらない $ref があると、標準エラーに出して 0 以外で終わる", () => {
   const { status, stdout, stderr } = runSearchRaw({
-    openapi: "3.1.0",
+    openapi: "3.2.1",
     paths: {
       "/m": {
         get: {
@@ -308,7 +308,7 @@ const getOp = (operationId: string, schema?: unknown) => ({
 });
 
 const specWith = (paths: unknown, schemas: Record<string, unknown>, extra: object = {}) => ({
-  openapi: "3.1.0",
+  openapi: "3.2.1",
   paths,
   components: { schemas, ...extra },
 });
@@ -695,4 +695,192 @@ test("名前の map の入れ子: properties という名前のプロパティ�
     ),
   );
   assert.deepEqual(find(result, "GET", "/p").schemas, ["Inner"]);
+});
+
+test("query の operation が QUERY として出る", () => {
+  const result = runSearch(
+    specWith({ "/q": { query: getOp("queryQ", ref("Q")) } }, { Q: empty() }),
+  );
+  assert.deepEqual(find(result, "QUERY", "/q").schemas, ["Q"]);
+  assert.equal(find(result, "QUERY", "/q").operationId, "queryQ");
+});
+
+test("additionalOperations の operation が、キーそのままの method で出て、参照する schema が入る", () => {
+  const result = runSearch(
+    specWith(
+      { "/x": { additionalOperations: { Copy: getOp("copyX", ref("X")) } } },
+      { X: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "Copy", "/x").schemas, ["X"]);
+  assert.equal(find(result, "Copy", "/x").operationId, "copyX");
+});
+
+test("additionalOperations というキー自体は operation として出ない", () => {
+  const result = runSearch(
+    specWith({ "/x": { get: getOp("getX"), additionalOperations: { Copy: getOp("copyX") } } }, {}),
+  );
+  assert.deepEqual(
+    result.map((e) => e.method),
+    ["Copy", "GET"],
+  );
+});
+
+test("$ref の参照元と参照先の両方に additionalOperations があると両方出て、同じキーは参照元が勝つ", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/m": {
+          $ref: "#/components/pathItems/M",
+          additionalOperations: { Same: getOp("fromSource"), OnlySource: getOp("onlySource") },
+        },
+      },
+      {},
+      {
+        pathItems: {
+          M: {
+            additionalOperations: { Same: getOp("fromTarget"), OnlyTarget: getOp("onlyTarget") },
+          },
+        },
+      },
+    ),
+  );
+  assert.deepEqual(
+    result.map((e) => e.method),
+    ["OnlySource", "OnlyTarget", "Same"],
+  );
+  assert.equal(find(result, "Same", "/m").operationId, "fromSource");
+});
+
+test("additionalOperations が配列・null・文字列でも落ちず、他の operation は出る", () => {
+  for (const bad of [[], null, "x"]) {
+    const result = runSearch(
+      specWith({ "/b": { get: getOp("getB"), additionalOperations: bad } }, {}),
+    );
+    assert.deepEqual(
+      result.map((e) => `${e.method} ${e.path}`),
+      ["GET /b"],
+    );
+  }
+});
+
+test("text/event-stream の itemSchema と、その中の contentSchema が参照する schema が入る", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/e": {
+          get: {
+            operationId: "getE",
+            summary: "getE",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "text/event-stream": {
+                    itemSchema: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "string",
+                          contentMediaType: "application/json",
+                          contentSchema: ref("Payload"),
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { Payload: { type: "object", properties: { leaf: ref("Leaf") } }, Leaf: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/e").schemas, ["Leaf", "Payload"]);
+});
+
+test("media type の examples の dataValue の中の $ref は辿らず、同じ operation の schema は出る", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/d": {
+          get: {
+            operationId: "d",
+            summary: "d",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: ref("Doc"),
+                    examples: { sample: { dataValue: { a: missingRef } } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { Doc: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/d").schemas, ["Doc"]);
+});
+
+test("components.examples への $ref でも dataValue の中は辿らない", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/x": {
+          get: {
+            operationId: "x",
+            summary: "x",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: ref("X"),
+                    examples: { sample: { $ref: "#/components/examples/Foo" } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { X: empty() },
+      { examples: { Foo: { summary: "foo", dataValue: { a: missingRef } } } },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/x").schemas, ["X"]);
+});
+
+test("serializedValue (文字列) を持つ Example があっても落ちない", () => {
+  const result = runSearch(
+    specWith(
+      {
+        "/s": {
+          get: {
+            operationId: "s",
+            summary: "s",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "text/event-stream": {
+                    itemSchema: ref("S"),
+                    examples: { sample: { serializedValue: "event: a\n\n" } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { S: empty() },
+    ),
+  );
+  assert.deepEqual(find(result, "GET", "/s").schemas, ["S"]);
 });
