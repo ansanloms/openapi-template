@@ -409,6 +409,63 @@ test("paths の下の / で始まらず x- でもないキーの値が object �
   assert.equal(find(entries, "GET", "/a").operationId, "a");
 });
 
+test("paths の下の x- の拡張フィールドの値が operation を持つ object でも、path item として扱われず出力に入らない", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "x-internal": {
+        get: { operationId: "g", summary: "g", responses: okResponse(empty()) },
+      },
+      "/a": { get: { operationId: "a", summary: "a", responses: okResponse(empty()) } },
+    },
+  });
+  assert.equal(status, 0, stderr);
+  assert.equal(stderr, "");
+  const entries = JSON.parse(stdout) as Entry[];
+  assert.deepEqual(
+    entries.map((e) => `${e.method} ${e.path}`),
+    ["GET /a"],
+  );
+});
+
+test("paths の下の x- の拡張フィールドの値の中に解決できない $ref があっても、参照として収集されず報告されない", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "x-internal": {
+        get: { operationId: "g", summary: "g", responses: okResponse(ref("Missing")) },
+      },
+      "/a": { get: { operationId: "a", summary: "a", responses: okResponse(empty()) } },
+    },
+  });
+  assert.equal(status, 0, stderr);
+  assert.equal(stderr, "");
+  const entries = JSON.parse(stdout) as Entry[];
+  assert.deepEqual(
+    entries.map((e) => `${e.method} ${e.path}`),
+    ["GET /a"],
+  );
+});
+
+test("paths の下の / でも x- でもないキーの値が operation を持つ object でも、path item として扱われず出力に入らない", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      users: {
+        get: { operationId: "g", summary: "g", responses: okResponse(empty()) },
+      },
+      "/a": { get: { operationId: "a", summary: "a", responses: okResponse(empty()) } },
+    },
+  });
+  assert.equal(status, 0, stderr);
+  assert.equal(stderr, "");
+  const entries = JSON.parse(stdout) as Entry[];
+  assert.deepEqual(
+    entries.map((e) => `${e.method} ${e.path}`),
+    ["GET /a"],
+  );
+});
+
 test("正しい path item が同じ spec にあっても、object でない path item があると JSON は出力しない", () => {
   const { status, stdout, stderr } = runSearchRaw({
     openapi: "3.2.1",
