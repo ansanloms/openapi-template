@@ -23,7 +23,7 @@ get:
           examples:
             succeeded:
               value:
-                $ref: ../examples/User/default.yaml
+                $ref: ../examples/ResponseGetUsersId/default.yaml
     500:
       description: 処理失敗時。
       content:
