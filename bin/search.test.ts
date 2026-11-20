@@ -351,6 +351,95 @@ test("解決できない $ref と object でない operation の両方がある�
   assert.ok(stderr.includes("object でない operation: /x get"), stderr);
 });
 
+test("path item が object でないと、path を標準エラーに出して 0 以外で終わる", () => {
+  for (const value of [null, "text", ["a"]]) {
+    const { status, stdout, stderr } = runSearchRaw({
+      openapi: "3.2.1",
+      paths: { "/x": value },
+    });
+    assert.notEqual(status, 0);
+    assert.equal(stdout, "");
+    assert.ok(stderr.includes("object でない path item: /x"), stderr);
+  }
+});
+
+test("paths の下の x- の拡張フィールドは、値が object でなくても読み飛ばされ、正しい path item の operation が出る", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "x-bool": true,
+      "x-string": "text",
+      "x-array": ["a"],
+      "x-null": null,
+      "/a": { get: { operationId: "a", summary: "a", responses: okResponse(empty()) } },
+    },
+  });
+  assert.equal(status, 0, stderr);
+  assert.equal(stderr, "");
+  const entries = JSON.parse(stdout) as Entry[];
+  assert.equal(find(entries, "GET", "/a").operationId, "a");
+});
+
+test("x- の拡張フィールドと壊れた path item が同居しても、壊れた path item だけが標準エラーに出て 0 以外で終わる", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "x-internal": true,
+      "/x": null,
+      "/a": { get: { operationId: "a", summary: "a", responses: okResponse(empty()) } },
+    },
+  });
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("object でない path item: /x"), stderr);
+  assert.ok(!stderr.includes("x-internal"), stderr);
+});
+
+test("paths の下の / で始まらず x- でもないキーの値が object でなくても、読み飛ばされて JSON が出る", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      foo: "text",
+      "/a": { get: { operationId: "a", summary: "a", responses: okResponse(empty()) } },
+    },
+  });
+  assert.equal(status, 0, stderr);
+  assert.equal(stderr, "");
+  const entries = JSON.parse(stdout) as Entry[];
+  assert.equal(find(entries, "GET", "/a").operationId, "a");
+});
+
+test("正しい path item が同じ spec にあっても、object でない path item があると JSON は出力しない", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "/x": null,
+      "/y": { get: { operationId: "y", summary: "y", responses: okResponse(empty()) } },
+    },
+  });
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("object でない path item: /x"), stderr);
+});
+
+test("解決できない $ref、object でない path item、object でない operation がすべてあると、3 種類とも標準エラーに出す", () => {
+  const { status, stdout, stderr } = runSearchRaw({
+    openapi: "3.2.1",
+    paths: {
+      "/x": null,
+      "/y": { get: null },
+      "/z": {
+        get: { operationId: "z", summary: "z", responses: okResponse(ref("Missing")) },
+      },
+    },
+  });
+  assert.notEqual(status, 0);
+  assert.equal(stdout, "");
+  assert.ok(stderr.includes("解決できない $ref: #/components/schemas/Missing"), stderr);
+  assert.ok(stderr.includes("object でない path item: /x"), stderr);
+  assert.ok(stderr.includes("object でない operation: /y get"), stderr);
+});
+
 const getOp = (operationId: string, schema?: unknown) => ({
   operationId,
   summary: operationId,
