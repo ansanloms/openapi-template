@@ -19,11 +19,11 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/ResponseGetUsers.yaml
+            $ref: ../components/schemas/ResponseGetUsersId.yaml
           examples:
             succeeded:
               value:
-                $ref: ../examples/ResponseGetUsers/default.yaml
+                $ref: ../examples/User/default.yaml
     500:
       description: 処理失敗時。
       content:
