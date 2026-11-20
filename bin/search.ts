@@ -159,15 +159,17 @@ const resolvePathItem = (item: Record<string, any>): Record<string, any> | undef
 // object でない operation の場所 (`<path> <method>`)。method は spec に書かれたキーそのまま。
 const invalidOperations: string[] = [];
 
-// `/` で始まるキーのうち、値が object でない path item の場所 (`<path>`)。
-// `/` で始まらないキー (`x-` の拡張フィールド等) の object でない値は、控えずに読み飛ばす。
+// object でない path item の場所 (`<path>`)。
+// path item として扱うのは `/` で始まるキーだけ。それ以外 (`x-` の拡張フィールド等) は、
+// 値の型にかかわらず控えずに読み飛ばす。
 const invalidPathItems: string[] = [];
 
 const result = Object.entries<any>(spec.paths ?? {}).flatMap(([endpoint, rawItem]) => {
+  if (!endpoint.startsWith("/")) {
+    return [];
+  }
   if (!isPlainObject(rawItem)) {
-    if (endpoint.startsWith("/")) {
-      invalidPathItems.push(endpoint);
-    }
+    invalidPathItems.push(endpoint);
     return [];
   }
   const item = resolvePathItem(rawItem);
