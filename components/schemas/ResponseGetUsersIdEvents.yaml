@@ -1,0 +1,22 @@
+type: object
+required:
+  - event
+  - data
+properties:
+  event:
+    type: string
+    const: userUpdated
+    description: イベント種別。
+  data:
+    type: string
+    description: 更新後のユーザ。JSON 文字列である。
+    contentMediaType: application/json
+    contentSchema:
+      $ref: "./User.yaml"
+  id:
+    type: string
+    description: イベント ID。
+  retry:
+    type: integer
+    minimum: 0
+    description: 再接続までの待ち時間。単位はミリ秒である。

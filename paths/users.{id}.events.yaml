@@ -1,0 +1,39 @@
+get:
+  operationId: getUsersIdEvents
+  summary: ユーザの更新イベントの購読。
+  tags:
+    - users
+  description:
+    $ref: ./descriptions/getUsersIdEvents.md
+  parameters:
+    - in: path
+      name: id
+      required: true
+      description: ユーザ ID。
+      schema:
+        type: integer
+        format: int64
+  responses:
+    200:
+      description: 処理成功時。
+      content:
+        text/event-stream:
+          itemSchema:
+            $ref: ../components/schemas/ResponseGetUsersIdEvents.yaml
+          examples:
+            userUpdated:
+              serializedValue: |+
+                event: userUpdated
+                id: 1
+                data: {"id":1,"email":"user@example.org","status":"admin"}
+
+    500:
+      description: 処理失敗時。
+      content:
+        application/problem+json:
+          schema:
+            $ref: ../components/schemas/ResponseError.yaml
+          examples:
+            processingFailed:
+              value:
+                $ref: ../examples/ResponseError/default.yaml

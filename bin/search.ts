@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { parseArgs } from "node:util";
 import * as yaml from "yaml";
 
-const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"];
+const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace", "query"];
 
 const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 
@@ -32,9 +32,9 @@ const nameMaps = new Set([
   "encoding",
 ]);
 
-// Example Object の value はデータなので外す。
-const withoutValue = (obj: unknown) => {
-  const { value: _value, ...rest } = obj as Record<string, unknown>;
+// Example Object の value と dataValue はデータなので外す。
+const withoutExampleData = (obj: unknown) => {
+  const { value: _value, dataValue: _dataValue, ...rest } = obj as Record<string, unknown>;
   return rest;
 };
 
@@ -51,7 +51,7 @@ const getRefs = (obj: unknown): string[] =>
       return Array.isArray(v)
         ? []
         : Object.values(v).flatMap((e) =>
-            e && typeof e === "object" ? getRefs(withoutValue(e)) : [],
+            e && typeof e === "object" ? getRefs(withoutExampleData(e)) : [],
           );
     }
     if (nameMaps.has(k) && !Array.isArray(v)) {
@@ -109,23 +109,31 @@ const collect = (obj: unknown) => {
       if (keys[0] === "components" && keys[1] === "schemas" && keys.length >= 3) {
         names.add(keys[2]);
       }
-      // redocly は $ref で取り込んだ Example を components.examples へ寄せるので、ここでも value を外す。
+      // redocly は $ref で取り込んだ Example を components.examples へ寄せるので、ここでも value と dataValue を外す。
       const isExample = keys.length === 3 && keys[0] === "components" && keys[1] === "examples";
-      walk(isExample && target && typeof target === "object" ? withoutValue(target) : target);
+      walk(isExample && target && typeof target === "object" ? withoutExampleData(target) : target);
     }
   };
   walk(obj);
   return [...names].sort();
 };
 
+const isPlainObject = (v: unknown): v is Record<string, any> =>
+  v !== null && typeof v === "object" && !Array.isArray(v);
+
 // path item の $ref を連鎖も含めて辿り、$ref 以外のキーを参照元優先で合わせる。辿れなければ undefined。
+// additionalOperations だけは 1 階層合成し、同じキーは参照元を優先する。
 const resolvePathItem = (item: Record<string, any>): Record<string, any> | undefined => {
   const visited = new Set<string>();
   let merged: Record<string, any> = {};
   let current: Record<string, any> = item;
   while (true) {
     const { $ref, ...rest } = current;
-    merged = { ...rest, ...merged };
+    const { additionalOperations: ops, ...others } = rest;
+    merged = { ...others, ...merged };
+    if (isPlainObject(ops)) {
+      merged.additionalOperations = { ...ops, ...merged.additionalOperations };
+    }
     if (typeof $ref !== "string") {
       return merged;
     }
@@ -153,15 +161,21 @@ const result = Object.entries<any>(spec.paths ?? {}).flatMap(([endpoint, rawItem
   if (item === undefined) {
     return [];
   }
-  return Object.entries<any>(item)
-    .filter(([method]) => methods.includes(method))
-    .map(([method, operation]) => ({
-      method: method.toUpperCase(),
-      path: endpoint,
-      operationId: operation.operationId,
-      summary: operation.summary,
-      schemas: collect([item.parameters, operation]),
-    }));
+  const operations: [string, any][] = [
+    ...Object.entries<any>(item)
+      .filter(([method]) => methods.includes(method))
+      .map(([method, operation]): [string, any] => [method.toUpperCase(), operation]),
+    ...(isPlainObject(item.additionalOperations)
+      ? Object.entries<any>(item.additionalOperations)
+      : []),
+  ];
+  return operations.map(([method, operation]) => ({
+    method,
+    path: endpoint,
+    operationId: operation.operationId,
+    summary: operation.summary,
+    schemas: collect([item.parameters, operation]),
+  }));
 });
 
 result.sort((a, b) => cmp(a.path, b.path) || cmp(a.method, b.method));
