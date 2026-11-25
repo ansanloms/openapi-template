@@ -5,6 +5,8 @@ extends:
 apis:
   example:
     root: ./api.yaml
+openapi:
+  schemaDefinitionsTagName: Schemas
 plugins:
   - "@ansanloms/redocly-plugins"
 rules:
