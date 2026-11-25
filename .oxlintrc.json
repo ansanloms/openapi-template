@@ -1,1 +1,5 @@
-{ "$schema": "./node_modules/oxlint/configuration_schema.json", "rules": { "curly": "error" } }
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": { "correctness": "error" },
+  "rules": { "curly": "error" }
+}
