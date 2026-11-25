@@ -1,4 +1,6 @@
 type: object
+description:
+  $ref: "./descriptions/RequestPostUsers.md"
 required:
   - email
   - status
