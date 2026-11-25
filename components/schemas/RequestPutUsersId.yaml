@@ -1,4 +1,6 @@
 type: object
+description:
+  $ref: "./descriptions/RequestPutUsersId.md"
 required:
   - email
 properties:

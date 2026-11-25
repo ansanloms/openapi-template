@@ -1,4 +1,6 @@
 type: object
+description:
+  $ref: "./descriptions/ResponseGetUsers.md"
 required:
   - offset
   - limit

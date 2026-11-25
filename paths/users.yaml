@@ -8,8 +8,8 @@ get:
   parameters:
     - in: query
       name: ids[]
-      description: 絞り込みユーザ ID。
       required: false
+      description: 絞り込みユーザ ID。
       schema:
         type: array
         items:
