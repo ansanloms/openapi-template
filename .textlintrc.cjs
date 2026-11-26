@@ -10,8 +10,8 @@
 module.exports = {
   plugins: {
     "@ansanloms/textlint-plugin-yaml-keys": {
-      // 抽出対象とする yaml キー。`*` / `[]` / 階層パス対応。詳細は ansanloms/textlint-plugin-yaml-keys を参照。
-      keys: ["description", "summary"],
+      // 全ファイルで抽出対象とする yaml キー。`files` / `keys` の記法は ansanloms/textlint-plugin-yaml-keys を参照。
+      files: [{ keys: ["description", "summary"] }],
     },
   },
   rules: {

@@ -22,6 +22,8 @@ get:
             $ref: ../components/schemas/ResponseGetUsersIdEvents.yaml
           examples:
             userUpdated:
+              dataValue:
+                $ref: ../examples/ResponseGetUsersIdEvents/default.yaml
               serializedValue: |+
                 event: userUpdated
                 id: 1
